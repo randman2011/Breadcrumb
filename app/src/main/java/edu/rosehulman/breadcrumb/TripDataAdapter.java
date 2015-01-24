@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by watterlm on 1/23/2015.
  */
 public class TripDataAdapter {
-    private static final String TABLE_NAME = "trips";
-    private static final String KEY_ID = "_id";
+    public static final String TABLE_NAME = "trips";
+    public static final String KEY_ID = "_id";
     private static final String KEY_START_DATE = "start_date";
     private static final String KEY_END_DATE = "end_date";
     private static final String KEY_DISTANCE = "distance";
@@ -61,7 +61,7 @@ public class TripDataAdapter {
             sb.append(KEY_ID + " integer primary key autoincrement, ");
             sb.append(KEY_START_DATE + " text, ");
             sb.append(KEY_END_DATE + " text, ");
-            sb.append(KEY_DISTANCE + " integer");
+            sb.append(KEY_DISTANCE + " double");
             sb.append(")");
             CREATE_STATEMENT = sb.toString();
         }

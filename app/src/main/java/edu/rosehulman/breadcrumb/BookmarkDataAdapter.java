@@ -1,9 +1,90 @@
 package edu.rosehulman.breadcrumb;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
 /**
  * Created by watterlm on 1/23/2015.
  */
 public class BookmarkDataAdapter {
+    private static final String TABLE_NAME = "bookmark";
+    private static final String KEY_ID = "_id";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_DESCRIPTION = "description";
+    private static final String KEY_IMAGE_FILENAMES = "images";
+    private static final String KEY_LONGITUDE = "longitude";
+    private static final String KEY_LATITUDE = "latitude";
 
+    private SQLiteDatabase mDb;
+    private BookmarkDBHelper mOpenHelper;
 
+    public BookmarkDataAdapter(Context context){
+        mOpenHelper = new BookmarkDBHelper(context);
+    }
+
+    public void open(){
+        mDb = mOpenHelper.getWritableDatabase();
+    }
+
+    public void close(){
+        mDb.close();
+    }
+
+    private ContentValues getContentValues(Bookmark bookmark){
+
+        return null;
+    }
+
+    private Bookmark getBookmarkFromCursor(Cursor cursor){
+
+        return null;
+    }
+
+    public Bookmark addBookmark(Bookmark bookmark){
+
+        return null;
+    }
+
+    public void deleteBookmark(Bookmark bookmark){
+        mDb.delete(TABLE_NAME, KEY_ID + " = " + bookmark.getId(), null);
+    }
+
+    private static class BookmarkDBHelper extends SQLiteOpenHelper {
+        private static final String CREATE_STATEMENT;
+
+        static {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE ");
+            sb.append(TABLE_NAME);
+            sb.append(" (");
+            sb.append(KEY_ID + " integer primary key autoincrement, ");
+            sb.append(KEY_TITLE + " text, ");
+            sb.append(KEY_DESCRIPTION + " text, ");
+            sb.append(KEY_IMAGE_FILENAMES + " text, ");
+            sb.append(KEY_LONGITUDE + " double, ");
+            sb.append(KEY_LATITUDE + " double, ");
+            sb.append(")");
+            CREATE_STATEMENT = sb.toString();
+        }
+
+        private static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
+        public BookmarkDBHelper(Context context) {
+            super(context, Constants.constants.DATABASE_NAME, null, Constants.constants.DATABASE_VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL(CREATE_STATEMENT);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL(DROP_STATEMENT);
+            db.execSQL(CREATE_STATEMENT);
+        }
+    }
 }
