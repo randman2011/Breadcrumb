@@ -13,5 +13,10 @@
     <string name="menu_exit">Exit</string>
     <string name="drawer_open"></string>
     <string name="drawer_close"></string>
+    <string name="title_activity_trip_summary">TripSummaryActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="save">SAVE</string>
 
 </resources>
