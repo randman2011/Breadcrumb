@@ -20,5 +20,6 @@
     <string name="name">Name</string>
     <string name="description">Description</string>
     <string name="save">SAVE</string>
+    <string name="title_activity_bookmark_summmary">BookmarkSummmary</string>
 
 </resources>

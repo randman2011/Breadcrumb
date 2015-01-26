@@ -7,7 +7,7 @@ public class GPSCoordinate {
     private double longitude;
     private double latitude;
 
-    public GPSCoordinate(double longitude, double latitude){
+    public GPSCoordinate(double latitude, double longitude){
         this.longitude = longitude;
         this.latitude = latitude;
     }

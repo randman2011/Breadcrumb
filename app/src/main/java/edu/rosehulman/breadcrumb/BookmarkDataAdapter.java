@@ -17,6 +17,7 @@ public class BookmarkDataAdapter {
     private static final String KEY_IMAGE_FILENAMES = "images";
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_LAST_VISITED ="last_visited";
 
     private SQLiteDatabase mDb;
     private BookmarkDBHelper mOpenHelper;
@@ -66,6 +67,7 @@ public class BookmarkDataAdapter {
             sb.append(KEY_IMAGE_FILENAMES + " text, ");
             sb.append(KEY_LONGITUDE + " double, ");
             sb.append(KEY_LATITUDE + " double, ");
+            sb.append(KEY_LAST_VISITED + " text ");
             sb.append(")");
             CREATE_STATEMENT = sb.toString();
         }

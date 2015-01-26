@@ -1,6 +1,7 @@
 package edu.rosehulman.breadcrumb;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by watterlm on 1/23/2015.
@@ -11,11 +12,13 @@ public class Bookmark {
     private String description;
     private ArrayList<String> imageFilenames;
     private GPSCoordinate coordinate;
+    private Calendar lastVisted;
 
-    public Bookmark(String title, String description, GPSCoordinate coordinate){
+    public Bookmark(String title, String description, GPSCoordinate coordinate, Calendar lastVisted){
         this.title = title;
         this.description = description;
         this.coordinate = coordinate;
+        this.lastVisted = lastVisted;
     }
 
     public int getId() {
@@ -40,6 +43,14 @@ public class Bookmark {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Calendar getLastVisted() {
+        return lastVisted;
+    }
+
+    public void setLastVisted(Calendar lastVisted) {
+        this.lastVisted = lastVisted;
     }
 
     public ArrayList<String> getImageFilenames() {
