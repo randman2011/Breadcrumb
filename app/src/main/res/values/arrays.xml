@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="menu_items">
+        <item>@string/menu_tracking</item>
         <item>@string/menu_bookmark</item>
         <item>@string/menu_trip_history</item>
         <item>@string/menu_exit</item>
