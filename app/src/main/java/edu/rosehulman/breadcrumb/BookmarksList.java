@@ -19,6 +19,7 @@ public class BookmarksList extends Fragment implements View.OnClickListener {
 
         return view;
     }
+
     @Override
     public void onClick(View v) {
 

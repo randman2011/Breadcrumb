@@ -51,7 +51,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 selectItem(position);
-                Log.d("BREAD", "list item clicked");
+                Log.d(Constants.constants.LOG_NAME, "Drawer list item clicked");
             }
         });
 
@@ -133,25 +133,18 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
-        }
-    }
-
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
         // TODO
         // Create a new fragment and specify the planet to show based on position
         if(mMenuItems[position].toString().equals(getString(R.string.menu_bookmark))) {
-            Fragment fragment = new BookmarkSummary();
+            Fragment fragment = new BookmarksList();
 
             // Insert the fragment by replacing any existing fragment
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-            Log.d("BREAD", "bookmark summary");
+            Log.d(Constants.constants.LOG_NAME, "Bookmark Summary selected");
         }else if (mMenuItems[position].toString().equals(getString(R.string.menu_tracking))){
             Fragment fragment = new TripTracking();
 
@@ -159,10 +152,20 @@ public class MainActivity extends ActionBarActivity {
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-            Log.d("BREAD", "tracking summary");
-        }
+            Log.d(Constants.constants.LOG_NAME, "Tracking selected");
+        }else if (mMenuItems[position].toString().equals(getString(R.string.menu_trip_history))){
+            Fragment fragment = new TripHistory();
 
-        Log.d("BREAD", mMenuItems[position]);
+            // Insert the fragment by replacing any existing fragment
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            Log.d(Constants.constants.LOG_NAME, "Trip History selected");
+        }else if(mMenuItems[position].toString().equals(getString(R.string.menu_exit))){
+
+            Log.d(Constants.constants.LOG_NAME, "Finish selected");
+            finish();
+        }
 
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
