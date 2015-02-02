@@ -28,13 +28,25 @@
         android:id="@+id/image_sampler"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="96dp"
         android:gravity="center"
         android:layout_gravity="center_horizontal">
 
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:visibility="gone"
+            android:id="@+id/imageView1" />
+
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:visibility="gone"
+            android:id="@+id/imageView2" />
+
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
             android:src="@drawable/ic_action_new"
             android:id="@+id/image_add_button" />
     </LinearLayout>
