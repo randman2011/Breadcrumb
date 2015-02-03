@@ -1,6 +1,7 @@
 package edu.rosehulman.breadcrumb;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -26,6 +29,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.fragment_trip_tracking, container, false);
         ((Button) v.findViewById(R.id.trip_control)).setOnClickListener(this);
+        ((ImageButton)v.findViewById(R.id.fab_add_bookmark)).setOnClickListener(this);
 
         setUpMapIfNeeded();
         return v;
@@ -34,7 +38,19 @@ public class TripTracking extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.trip_control:
 
+                return;
+            case R.id.fab_add_bookmark:
+                Toast.makeText(getActivity(), "FAB pressed", Toast.LENGTH_SHORT).show();
+                Fragment fragment = new AddBookmark();
+
+                // Insert the fragment by replacing any existing fragment
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                return;
+        }
     }
 
     @Override

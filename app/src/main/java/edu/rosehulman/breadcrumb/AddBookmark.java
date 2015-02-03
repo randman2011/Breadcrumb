@@ -64,6 +64,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                 // Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.save_button:
+                // Get GPS coordinates
                 // Save bookmark to database
                 return;
             case R.id.image_add_button:
@@ -86,6 +87,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                     imageView1.setVisibility(View.GONE);
                     imageView2.setVisibility(View.GONE);
                 }
+
+                // Trigger redraw somehow
 
                 return;
         }

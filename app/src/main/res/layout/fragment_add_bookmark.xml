@@ -32,16 +32,18 @@
         android:gravity="center"
         android:layout_gravity="center_horizontal">
 
-        <ImageView
+        <ImageButton
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:visibility="gone"
+            android:scaleType="centerCrop"
             android:id="@+id/imageView1" />
 
-        <ImageView
+        <ImageButton
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:visibility="gone"
+            android:scaleType="centerCrop"
             android:id="@+id/imageView2" />
 
         <ImageButton
