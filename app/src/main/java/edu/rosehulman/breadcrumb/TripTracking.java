@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -69,6 +70,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
                             coors.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
                         }
                         mMap.addPolyline(new PolylineOptions().width(5).color(Color.RED).addAll(coors));
+                        trip.setEndDate(Calendar.getInstance());
                         tripAdapter.addTrip(trip);
                     }
 
