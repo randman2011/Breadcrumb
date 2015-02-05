@@ -64,14 +64,14 @@ public class TripTracking extends Fragment implements View.OnClickListener {
                     tripControl.setText(R.string.start_trip);
                     trip = locManager.endTracking();
                     if (trip != null) {
-                        Polyline line = mMap.addPolyline(new PolylineOptions().width(5).color(Color.RED));
                         List<LatLng> coors = new ArrayList<LatLng>();
                         for(GPSCoordinate coordinate : trip.getCoordinates()) {
                             coors.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
                         }
-                        line.setPoints(coors);
-                        //tripAdapter.addTrip(trip);
+                        mMap.addPolyline(new PolylineOptions().width(5).color(Color.RED).addAll(coors));
+                        tripAdapter.addTrip(trip);
                     }
+
 
                 }
                 return;
