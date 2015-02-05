@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
         ((ImageButton)view.findViewById(R.id.image_add_button)).setOnClickListener(this);
         ((Button)view.findViewById(R.id.save_button)).setOnClickListener(this);
         ((Button)view.findViewById(R.id.cancel_button)).setOnClickListener(this);
+        // TODO make type ImageButton to allow deleting
         imageView1 = (ImageView)view.findViewById(R.id.imageView1);
         imageView2 = (ImageView)view.findViewById(R.id.imageView2);
         imageBitmaps = new Bitmap[MAX_NUMBER_OF_IMAGES];
@@ -72,27 +74,11 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, KEY_PHOTO_SELECT);
-                // Add ImageView for added image and add to LinearLayout
-                    // Should it be an ImageButton to allow deleting?
-                if (numAddedImages > 1) {
-                    imageView1.setImageBitmap(imageBitmaps[numAddedImages-2]);
-                    imageView1.setVisibility(View.VISIBLE);
-                    imageView2.setImageBitmap(imageBitmaps[numAddedImages-1]);
-                    imageView2.setVisibility(View.VISIBLE);
-                } else if (numAddedImages == 1) {
-                    imageView2.setImageBitmap(imageBitmaps[numAddedImages-1]);
-                    imageView2.setVisibility(View.VISIBLE);
-                    imageView1.setVisibility(View.GONE);
-                } else {
-                    imageView1.setVisibility(View.GONE);
-                    imageView2.setVisibility(View.GONE);
-                }
-
-                // Trigger redraw somehow
-
                 return;
         }
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -110,6 +96,22 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                     }
                     imageBitmaps[numAddedImages] = BitmapFactory.decodeStream(imageStream);
                     numAddedImages++;
+
+                    if (numAddedImages > 1) {
+                        imageView1.setImageBitmap(imageBitmaps[numAddedImages-2]);
+                        imageView1.setVisibility(View.VISIBLE);
+                        imageView2.setImageBitmap(imageBitmaps[numAddedImages-1]);
+                        imageView2.setVisibility(View.VISIBLE);
+                    } else if (numAddedImages == 1) {
+                        imageView2.setImageBitmap(imageBitmaps[numAddedImages-1]);
+                        imageView2.setVisibility(View.VISIBLE);
+                        imageView1.setVisibility(View.GONE);
+                    } else {
+                        imageView1.setVisibility(View.GONE);
+                        imageView2.setVisibility(View.GONE);
+                    }
+                    imageView1.invalidate();
+                    imageView2.invalidate();
 
                 }
         }
