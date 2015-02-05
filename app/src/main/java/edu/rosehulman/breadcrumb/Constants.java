@@ -20,5 +20,9 @@ public class Constants {
         public static String[] deserialize(String content){
             return content.split(ARRAY_DIVIDER);
         }
+
+        public interface FragmentCloseListener {
+            void onFragmentClose(String tag);
+        }
     }
 }

@@ -5,7 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,9 +32,11 @@ public class BookmarkDataAdapter {
 
     private SQLiteDatabase mDb;
     private BookmarkDBHelper mOpenHelper;
+    private Context context;
 
-    public BookmarkDataAdapter(Context context){
-        mOpenHelper = new BookmarkDBHelper(context);
+    public BookmarkDataAdapter(Context c){
+        context = c;
+        mOpenHelper = new BookmarkDBHelper(c);
     }
 
     public void open(){
@@ -43,12 +51,17 @@ public class BookmarkDataAdapter {
         ContentValues row = new ContentValues();
         row.put(KEY_TITLE, bookmark.getTitle());
         row.put(KEY_DESCRIPTION, bookmark.getDescription());
-        row.put(KEY_IMAGE_FILENAMES, (Constants.constants.serialize((String[])bookmark.getImageFilenames().toArray())));
+        ArrayList<String> fileNames = bookmark.getImageFilenames();
+        if (fileNames != null) {
+            row.put(KEY_IMAGE_FILENAMES, (Constants.constants.serialize((String[]) bookmark.getImageFilenames().toArray(new String[bookmark.getImageFilenames().size()]))));
+        } else {
+            row.put(KEY_IMAGE_FILENAMES, "");
+        }
         row.put(KEY_LONGITUDE, bookmark.getCoordinate().getLongitude());
         row.put(KEY_LATITUDE, bookmark.getCoordinate().getLatitude());
         row.put(KEY_LAST_VISITED, bookmark.getLastVisted().getTimeInMillis());
 
-        return null;
+        return row;
     }
 
     private Bookmark getBookmarkFromCursor(Cursor cursor){
@@ -76,6 +89,18 @@ public class BookmarkDataAdapter {
 
     public void deleteBookmark(Bookmark bookmark){
         mDb.delete(TABLE_NAME, KEY_ID + " = " + bookmark.getId(), null);
+    }
+
+    public ArrayList<Bitmap> getBitmapFromUriStrings(ArrayList<String> uriString){
+        ArrayList<Bitmap> bmpArrayList = new ArrayList<>();
+        for (int i = 0; i < uriString.size(); i++) {
+            try {
+                bmpArrayList.add(MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uriString.get(i))));
+            } catch (Exception e) {
+                Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+        return bmpArrayList;
     }
 
     private static class BookmarkDBHelper extends SQLiteOpenHelper {

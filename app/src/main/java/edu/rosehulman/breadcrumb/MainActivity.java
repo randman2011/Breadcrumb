@@ -16,7 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements Constants.constants.FragmentCloseListener{
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -24,6 +24,11 @@ public class MainActivity extends ActionBarActivity {
     private CharSequence mTitle;
     private ListView mDrawerList;
     private String[] mMenuItems;
+
+    @Override
+    public void onFragmentClose(String tag) {
+        getSupportFragmentManager().popBackStack();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

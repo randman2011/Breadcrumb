@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -34,7 +35,9 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
 
     private int numAddedImages = 0;
     private static final int MAX_NUMBER_OF_IMAGES = 10;
-    private Bitmap[] imageBitmaps;
+    private ArrayList<Bitmap> imageBitmaps;
+    private ArrayList<String> imageLocations;
+
     private ImageButton imageView1;
     private ImageButton imageView2;
     private LinearLayout imageSampler;
@@ -43,6 +46,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     private static final int KEY_PHOTO_SELECT = 20;
     private BookmarkDataAdapter bookmarkAdapter;
     private GPSLocationManager locManager;
+    private GPSCoordinate coordinate;
 
 
     @Nullable
@@ -58,10 +62,13 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
         ((Button)view.findViewById(R.id.cancel_button)).setOnClickListener(this);
         imageView1 = (ImageButton)view.findViewById(R.id.imageView1);
         imageView2 = (ImageButton)view.findViewById(R.id.imageView2);
-        imageBitmaps = new Bitmap[MAX_NUMBER_OF_IMAGES];
+        imageBitmaps = new ArrayList<Bitmap>();
+        imageLocations = new ArrayList<String>();
         bookmarkAdapter = new BookmarkDataAdapter(getActivity());
         bookmarkAdapter.open();
         locManager = new GPSLocationManager(getActivity());
+        coordinate = locManager.getGPSCoordinate();
+        locManager.endTracking();
 
         return view;
     }
@@ -73,8 +80,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                 // TODO Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.save_button:
-                // TODO Get GPS coordinates
                 addBookmark();
+                // TODO Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.image_add_button:
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -93,6 +100,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
             case KEY_PHOTO_SELECT:
                 if (resultCode == Activity.RESULT_OK) {
                     Uri image = data.getData();
+                    imageLocations.add(image.toString());
                     InputStream imageStream;
                     try {
                         imageStream = this.getActivity().getContentResolver().openInputStream(image);
@@ -100,16 +108,16 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                         Toast.makeText(this.getActivity(), "File not found", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    imageBitmaps[numAddedImages] = BitmapFactory.decodeStream(imageStream);
+                    imageBitmaps.add(BitmapFactory.decodeStream(imageStream));
                     numAddedImages++;
 
                     if (numAddedImages > 1) {
-                        imageView1.setImageBitmap(imageBitmaps[numAddedImages-2]);
+                        imageView1.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 2));
                         imageView1.setVisibility(View.VISIBLE);
-                        imageView2.setImageBitmap(imageBitmaps[numAddedImages-1]);
+                        imageView2.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 1));
                         imageView2.setVisibility(View.VISIBLE);
                     } else if (numAddedImages == 1) {
-                        imageView2.setImageBitmap(imageBitmaps[numAddedImages-1]);
+                        imageView2.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 1));
                         imageView2.setVisibility(View.VISIBLE);
                         imageView1.setVisibility(View.GONE);
                     } else {
@@ -126,10 +134,9 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     private void addBookmark() {
         String title = ((EditText)getActivity().findViewById(R.id.bookmark_name)).getText().toString();
         String description = ((EditText)getActivity().findViewById(R.id.bookmark_description)).getText().toString();
-        GPSCoordinate coordinate = locManager.getGPSCoordinate();
-        locManager.endTracking();
         Calendar lastVisited = Calendar.getInstance();
         Bookmark bookmark = new Bookmark(title, description, coordinate, lastVisited);
+        bookmark.setImageFilenames(imageLocations);
         bookmarkAdapter.addBookmark(bookmark);
     }
 }
