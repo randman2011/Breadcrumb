@@ -48,10 +48,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
 
                 return;
             case R.id.fab_add_bookmark:
-                Toast.makeText(getActivity(), "FAB pressed", Toast.LENGTH_SHORT).show();
                 Fragment fragment = new AddBookmark();
-
-                // Insert the fragment by replacing any existing fragment
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 return;
