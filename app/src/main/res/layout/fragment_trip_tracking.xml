@@ -33,14 +33,12 @@
 
 
     <ImageButton
-        android:background="@drawable/ripple"
-        android:stateListAnimator="@anim/anim"
+
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="@dimen/fab_bottom_margin"
         android:layout_marginRight="16dp"
-        android:elevation="4dp"
         android:layout_width="@dimen/fab_size"
         android:layout_height="@dimen/fab_size"
         android:src="@drawable/ic_add_bookmark"
