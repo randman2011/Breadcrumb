@@ -19,8 +19,9 @@ public class Trip {
     }
 
     public Trip(){
-        // TODO: for database
+
     }
+
     public Calendar getStartDate() {
         return startDate;
     }
@@ -33,13 +34,21 @@ public class Trip {
         this.endDate = endDate;
     }
 
+    public void setStartDate(Calendar startDate) {
+        this.startDate = startDate;
+    }
+
     public double getDistance() {
         if(this.distance == 0 && this.coordinates.size() > 1){
             this.distance = calculateDistanceKM();
-            // TODO: Add check for preferences in miles and do miles calculation
         }
+        // TODO: Add check for preferences in miles and do miles calculation
 
         return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
     public ArrayList<GPSCoordinate> getCoordinates() {

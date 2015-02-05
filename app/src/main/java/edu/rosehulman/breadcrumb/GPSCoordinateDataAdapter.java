@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /**
  * Created by watterlm on 1/23/2015.
  */
@@ -32,21 +35,46 @@ public class GPSCoordinateDataAdapter {
     }
 
     private ContentValues getContentValues(GPSCoordinate coordinate){
-
+        ContentValues row = new ContentValues();
+        row.put(KEY_LATITUDE, coordinate.getLatitude());
+        row.put(KEY_LONGITUDE, coordinate.getLongitude());
         return null;
     }
 
     private GPSCoordinate getGPSCoordinateFromCursor(Cursor cursor){
-
-        return null;
+        GPSCoordinate coordinate = new GPSCoordinate();
+        coordinate.setId(cursor.getLong(cursor.getColumnIndexOrThrow(KEY_ID)));
+        coordinate.setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LATITUDE)));
+        coordinate.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LONGITUDE)));
+        return coordinate;
     }
 
-    public GPSCoordinate addGPSCoordinates(GPSCoordinate coordinate, int tripID){
-
-        return null;
+    public ArrayList<GPSCoordinate> getAllCoordinates(ArrayList<GPSCoordinate> coordinates, long tripID){
+        coordinates.clear();
+        String[] projection = new String[] { KEY_ID, KEY_LATITUDE, KEY_LONGITUDE, KEY_TRIP_ID};
+        String selection = KEY_TRIP_ID + " + " + tripID;
+        Cursor cursor = mDb.query(TABLE_NAME, projection, selection, null, null, null, null, null);
+        if (!cursor.moveToFirst()){
+            return coordinates;
+        }
+        do {
+            GPSCoordinate toAdd = getGPSCoordinateFromCursor(cursor);
+            coordinates.add(toAdd);
+        } while (cursor.moveToNext());
+        Collections.sort(coordinates);
+        return coordinates;
     }
 
-    public void deleteGPSCoordinates(int tripID){
+    public void addGPSCoordinates(ArrayList<GPSCoordinate> coordinates, long tripID){
+        for (GPSCoordinate coordinate : coordinates ) {
+            ContentValues row = getContentValues(coordinate);
+            row.put(KEY_TRIP_ID, tripID);
+            long rowId = mDb.insert(TABLE_NAME, null, row);
+            coordinate.setId(rowId);
+        }
+    }
+
+    public void deleteGPSCoordinates(long tripID){
         mDb.delete(TABLE_NAME, KEY_TRIP_ID + " = " + tripID, null);
     }
 

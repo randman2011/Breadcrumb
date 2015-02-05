@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by watterlm on 1/23/2015.
@@ -20,9 +23,11 @@ public class TripDataAdapter {
 
     private SQLiteDatabase mDb;
     private TripDBHelper mOpenHelper;
+    private GPSCoordinateDataAdapter mGPSAdapter;
 
     public TripDataAdapter(Context context){
         mOpenHelper = new TripDBHelper(context);
+        mGPSAdapter = new GPSCoordinateDataAdapter(context);
     }
 
     public void open(){
@@ -42,8 +47,46 @@ public class TripDataAdapter {
         return null;
     }
 
-    private Trip getTripFromCursor(Cursor cursor){
+    private Cursor getTripsCursor(){
+        String[] projection = new String[] { KEY_ID, KEY_START_DATE, KEY_END_DATE, KEY_DISTANCE };
+        return mDb.query(TABLE_NAME, projection, null, null, null, null, KEY_ID + " DESC");
+    }
 
+    private Trip getTrip(long id){
+        String[] projection = new String[] { KEY_ID, KEY_START_DATE, KEY_END_DATE, KEY_DISTANCE };
+        String selection = KEY_ID + " + " + id;
+        Cursor c = mDb.query(TABLE_NAME, projection, selection, null, null, null, null, null);
+        if (c != null && c.moveToFirst()){
+            Trip trip = getTripFromCursor(c);
+            trip.setCoordinates(mGPSAdapter.getAllCoordinates(trip.getCoordinates(), trip.getId()));
+            return trip;
+        }
+        return null;
+    }
+
+    private Trip getTripFromCursor(Cursor cursor){
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        try {
+            Date endDate = simpleFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow(KEY_END_DATE)));
+            Date startDate = simpleFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow(KEY_START_DATE)));
+
+            Trip trip = new Trip();
+            trip.setId(cursor.getLong(cursor.getColumnIndexOrThrow(KEY_ID)));
+
+            Calendar end = Calendar.getInstance();
+            end.setTime(endDate);
+            trip.setEndDate(end);
+
+            Calendar start = Calendar.getInstance();
+            end.setTime(startDate);
+            trip.setStartDate(start);
+
+            trip.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_DISTANCE)));
+
+            trip.setCoordinates(mGPSAdapter.getAllCoordinates(trip.getCoordinates(), trip.getId()));
+        } catch (ParseException e) {
+            return null;
+        }
         return null;
     }
 
@@ -51,11 +94,13 @@ public class TripDataAdapter {
         ContentValues row = getContentValues(trip);
         long rowId = mDb.insert(TABLE_NAME, null, row);
         trip.setId(rowId);
+        mGPSAdapter.addGPSCoordinates(trip.getCoordinates(), rowId);
         return rowId;
     }
 
     public void deleteTrip(Trip trip){
         mDb.delete(TABLE_NAME, KEY_ID + " = " + trip.getId(), null);
+        mGPSAdapter.deleteGPSCoordinates(trip.getId());
     }
 
 
