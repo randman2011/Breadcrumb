@@ -13,11 +13,11 @@ public class Constants {
         public static final int MAP_ZOOM =  17;
         private static final String ARRAY_DIVIDER = ",";
 
-        public static String serialize(String[] content) {
+        public static String serialize(String[] content){
             return TextUtils.join(ARRAY_DIVIDER, content);
         }
 
-        public static String[] deserialize(String content) {
+        public static String[] deserialize(String content){
             return content.split(ARRAY_DIVIDER);
         }
     }
