@@ -6,6 +6,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by watterlm on 2/5/2015.
  */
@@ -51,9 +53,9 @@ public class GPSLocationManager implements LocationListener {
 
     }
 
-    public Location getCurrentLocation(){
+    public LatLng getCurrentLocation(){
         Location location = locationManager.getLastKnownLocation(locationProvider);
-        return location;
+        return new LatLng(location.getLatitude(), location.getLongitude());
     }
 
     public void endTracking(){
