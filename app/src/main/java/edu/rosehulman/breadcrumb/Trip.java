@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by watterlm on 1/23/2015.
  */
 public class Trip {
-    private int id;
+    private long id;
     private Calendar startDate;
     private Calendar endDate;
     private double distance = 0;
@@ -50,11 +50,11 @@ public class Trip {
         this.coordinates = coordinates;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

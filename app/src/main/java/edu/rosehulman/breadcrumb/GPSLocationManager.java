@@ -16,7 +16,7 @@ public class GPSLocationManager implements LocationListener {
     private LocationManager locationManager;
     private String locationProvider;
     private Context mContext;
-    private int tripID = -1;
+    private long tripID = -1;
 
     public GPSLocationManager(Context context) {
         this.mContext = context;
@@ -28,7 +28,7 @@ public class GPSLocationManager implements LocationListener {
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
     }
 
-    public GPSLocationManager(Context context, int tripID) {
+    public GPSLocationManager(Context context, long tripID) {
         this(context);
         this.tripID = tripID;
     }
@@ -66,7 +66,7 @@ public class GPSLocationManager implements LocationListener {
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
     }
 
-    public void setTripID(int tripID){
+    public void setTripID(long tripID){
         this.tripID = tripID;
     }
 }
