@@ -126,9 +126,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     private void addBookmark() {
         String title = ((EditText)getActivity().findViewById(R.id.bookmark_name)).getText().toString();
         String description = ((EditText)getActivity().findViewById(R.id.bookmark_description)).getText().toString();
-        Location location = locManager.getCurrentLocation();
+        GPSCoordinate coordinate = locManager.getGPSCoordinate();
         locManager.endTracking();
-        GPSCoordinate coordinate = new GPSCoordinate(location.getLatitude(), location.getLongitude());
         Calendar lastVisited = Calendar.getInstance();
         Bookmark bookmark = new Bookmark(title, description, coordinate, lastVisited);
         bookmarkAdapter.addBookmark(bookmark);

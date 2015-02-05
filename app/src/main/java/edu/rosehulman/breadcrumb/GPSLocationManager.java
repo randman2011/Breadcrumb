@@ -58,6 +58,11 @@ public class GPSLocationManager implements LocationListener {
         return new LatLng(location.getLatitude(), location.getLongitude());
     }
 
+    public GPSCoordinate getGPSCoordinate() {
+        Location location = locationManager.getLastKnownLocation(locationProvider);
+        return new GPSCoordinate(location.getLatitude(), location.getLongitude());
+    }
+
     public void endTracking(){
         locationManager.removeUpdates(this);
     }
