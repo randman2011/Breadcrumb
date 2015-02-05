@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.sql.Array;
+
 /**
  * Created by watterlm on 1/23/2015.
  */
@@ -35,6 +37,13 @@ public class BookmarkDataAdapter {
     }
 
     private ContentValues getContentValues(Bookmark bookmark){
+        ContentValues row = new ContentValues();
+        row.put(KEY_TITLE, bookmark.getTitle());
+        row.put(KEY_DESCRIPTION, bookmark.getDescription());
+        row.put(KEY_IMAGE_FILENAMES, (Constants.constants.serialize((String[])bookmark.getImageFilenames().toArray())));
+        row.put(KEY_LONGITUDE, bookmark.getCoordinate().getLongitude());
+        row.put(KEY_LATITUDE, bookmark.getCoordinate().getLatitude());
+        row.put(KEY_LAST_VISITED, bookmark.getLastVisted().toString());
 
         return null;
     }
@@ -44,9 +53,11 @@ public class BookmarkDataAdapter {
         return null;
     }
 
-    public Bookmark addBookmark(Bookmark bookmark){
-
-        return null;
+    public long addBookmark(Bookmark bookmark){
+        ContentValues row = getContentValues(bookmark);
+        long id = mDb.insert(TABLE_NAME, null, row);
+        bookmark.setId(id);
+        return id;
     }
 
     public void deleteBookmark(Bookmark bookmark){

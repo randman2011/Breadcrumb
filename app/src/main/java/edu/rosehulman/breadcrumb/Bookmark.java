@@ -7,7 +7,7 @@ import java.util.Calendar;
  * Created by watterlm on 1/23/2015.
  */
 public class Bookmark {
-    private int id;
+    private long id;
     private String title;
     private String description;
     private ArrayList<String> imageFilenames;
@@ -21,11 +21,11 @@ public class Bookmark {
         this.lastVisted = lastVisted;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
