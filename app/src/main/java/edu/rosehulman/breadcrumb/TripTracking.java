@@ -86,10 +86,9 @@ public class TripTracking extends Fragment implements View.OnClickListener {
             mMap = ((SupportMapFragment) mContext.getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                Location location = locManager.getCurrentLocation();
+                LatLng coordinate = locManager.getCurrentLocation();
                 locManager.endTracking();
-                LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 5);
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.constants.MAP_ZOOM);
                 mMap.animateCamera(yourLocation);
 
                 setUpMap(coordinate);
