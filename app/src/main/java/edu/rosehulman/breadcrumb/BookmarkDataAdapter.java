@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 
 /**
  * Created by watterlm on 1/23/2015.
@@ -43,14 +46,25 @@ public class BookmarkDataAdapter {
         row.put(KEY_IMAGE_FILENAMES, (Constants.constants.serialize((String[])bookmark.getImageFilenames().toArray())));
         row.put(KEY_LONGITUDE, bookmark.getCoordinate().getLongitude());
         row.put(KEY_LATITUDE, bookmark.getCoordinate().getLatitude());
-        row.put(KEY_LAST_VISITED, bookmark.getLastVisted().toString());
+        row.put(KEY_LAST_VISITED, bookmark.getLastVisted().getTimeInMillis());
 
         return null;
     }
 
     private Bookmark getBookmarkFromCursor(Cursor cursor){
-
-        return null;
+        long id = cursor.getLong(cursor.getColumnIndexOrThrow(KEY_ID));
+        String title = cursor.getString(cursor.getColumnIndexOrThrow(KEY_TITLE));
+        String description = cursor.getString(cursor.getColumnIndexOrThrow(KEY_DESCRIPTION));
+        String[] images = Constants.constants.deserialize(cursor.getString(cursor.getColumnIndexOrThrow(KEY_IMAGE_FILENAMES)));
+        double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LONGITUDE));
+        double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LATITUDE));
+        GPSCoordinate coord = new GPSCoordinate(longitude, latitude);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(cursor.getLong(cursor.getColumnIndexOrThrow(KEY_LAST_VISITED)));
+        Bookmark bookmark = new Bookmark(title, description, coord, cal);
+        bookmark.setImageFilenames(new ArrayList<String>(Arrays.asList(images)));
+        bookmark.setId(id);
+        return bookmark;
     }
 
     public long addBookmark(Bookmark bookmark){
@@ -78,7 +92,7 @@ public class BookmarkDataAdapter {
             sb.append(KEY_IMAGE_FILENAMES + " text, ");
             sb.append(KEY_LONGITUDE + " double, ");
             sb.append(KEY_LATITUDE + " double, ");
-            sb.append(KEY_LAST_VISITED + " text ");
+            sb.append(KEY_LAST_VISITED + " long ");
             sb.append(")");
             CREATE_STATEMENT = sb.toString();
         }
