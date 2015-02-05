@@ -178,5 +178,5 @@ public class MainActivity extends ActionBarActivity {
         // TODO
 //        mTitle = title;
 //        getFragmentManager().setTitle(mTitle);
-}
+    }
 }

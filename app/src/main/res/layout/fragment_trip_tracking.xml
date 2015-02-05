@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            tools:context="edu.rosehulman.breadcrumb.MapsActivity" />
+            tools:context=".MainActivity" />
 
         <Button
             android:id="@+id/trip_control"
