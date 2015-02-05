@@ -33,7 +33,7 @@
 
 
     <ImageButton
-
+        android:background="@drawable/ripple"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|right"
