@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Created by watterlm on 1/23/2015.
  */
@@ -32,7 +34,11 @@ public class TripDataAdapter {
     }
 
     private ContentValues getContentValues(Trip trip){
-
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        ContentValues row = new ContentValues();
+        row.put(KEY_START_DATE, simpleFormat.format(trip.getStartDate().getTime()));
+        row.put(KEY_END_DATE, simpleFormat.format(trip.getEndDate().getTime()));
+        row.put(KEY_DISTANCE, trip.getDistance());
         return null;
     }
 
@@ -41,9 +47,11 @@ public class TripDataAdapter {
         return null;
     }
 
-    public Trip addTrip(Trip trip){
-
-        return null;
+    public long addTrip(Trip trip){
+        ContentValues row = getContentValues(trip);
+        long rowId = mDb.insert(TABLE_NAME, null, row);
+        trip.setId(rowId);
+        return rowId;
     }
 
     public void deleteTrip(Trip trip){
