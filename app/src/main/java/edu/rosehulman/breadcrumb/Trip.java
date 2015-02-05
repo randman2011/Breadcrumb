@@ -16,6 +16,7 @@ public class Trip {
 
     public Trip(Calendar date){
         this.startDate = date;
+        this.coordinates = new ArrayList<GPSCoordinate>();
     }
 
     public Trip(){
@@ -57,6 +58,10 @@ public class Trip {
 
     public void setCoordinates(ArrayList<GPSCoordinate> coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public void addCoordinate(GPSCoordinate coordinate){
+        this.coordinates.add(coordinate);
     }
 
     public long getId() {

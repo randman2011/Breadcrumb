@@ -2,6 +2,7 @@ package edu.rosehulman.breadcrumb;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -19,6 +20,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by watterlm on 1/25/2015.
@@ -28,14 +34,19 @@ public class TripTracking extends Fragment implements View.OnClickListener {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private FragmentActivity mContext;
     private GPSLocationManager locManager;
+    private Button tripControl;
+    private Trip trip;
+    private TripDataAdapter tripAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.fragment_trip_tracking, container, false);
-        ((Button) v.findViewById(R.id.trip_control)).setOnClickListener(this);
+        tripControl = ((Button) v.findViewById(R.id.trip_control));
+        tripControl.setOnClickListener(this);
         ((ImageButton)v.findViewById(R.id.fab_add_bookmark)).setOnClickListener(this);
 
         locManager = new GPSLocationManager(getActivity());
+        tripAdapter = new TripDataAdapter(getActivity());
         setUpMapIfNeeded();
         return v;
     }
@@ -45,7 +56,24 @@ public class TripTracking extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.trip_control:
+                if (tripControl.getText().equals(getString(R.string.start_trip))){
+                    tripControl.setText(R.string.stop_trip);
+                    trip = new Trip();
+                    locManager.startTracking(trip, mMap);
+                } else {
+                    tripControl.setText(R.string.start_trip);
+                    trip = locManager.endTracking();
+                    if (trip != null) {
+                        Polyline line = mMap.addPolyline(new PolylineOptions().width(5).color(Color.RED));
+                        List<LatLng> coors = new ArrayList<LatLng>();
+                        for(GPSCoordinate coordinate : trip.getCoordinates()) {
+                            coors.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
+                        }
+                        line.setPoints(coors);
+                        //tripAdapter.addTrip(trip);
+                    }
 
+                }
                 return;
             case R.id.fab_add_bookmark:
                 Fragment fragment = new AddBookmark();

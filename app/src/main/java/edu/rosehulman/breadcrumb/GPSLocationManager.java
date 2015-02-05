@@ -6,7 +6,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Calendar;
 
 /**
  * Created by watterlm on 2/5/2015.
@@ -16,7 +19,7 @@ public class GPSLocationManager implements LocationListener {
     private LocationManager locationManager;
     private String locationProvider;
     private Context mContext;
-    private long tripID = -1;
+    private Trip trip;
 
     public GPSLocationManager(Context context) {
         this.mContext = context;
@@ -28,14 +31,9 @@ public class GPSLocationManager implements LocationListener {
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
     }
 
-    public GPSLocationManager(Context context, long tripID) {
-        this(context);
-        this.tripID = tripID;
-    }
-
     @Override
     public void onLocationChanged(Location location) {
-
+        trip.addCoordinate(new GPSCoordinate(location.getLatitude(), location.getLongitude()));
     }
 
     @Override
@@ -63,15 +61,13 @@ public class GPSLocationManager implements LocationListener {
         return new GPSCoordinate(location.getLatitude(), location.getLongitude());
     }
 
-    public void endTracking(){
+    public Trip endTracking(){
         locationManager.removeUpdates(this);
+        return trip;
     }
 
-    public void startTracking(){
+    public void startTracking(Trip trip, GoogleMap mMap){
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
-    }
-
-    public void setTripID(long tripID){
-        this.tripID = tripID;
+        this.trip = new Trip(Calendar.getInstance());
     }
 }
