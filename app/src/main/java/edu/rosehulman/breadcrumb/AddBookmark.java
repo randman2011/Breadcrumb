@@ -33,8 +33,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     private int numAddedImages = 0;
     private static final int MAX_NUMBER_OF_IMAGES = 10;
     private Bitmap[] imageBitmaps;
-    private ImageView imageView1;
-    private ImageView imageView2;
+    private ImageButton imageView1;
+    private ImageButton imageView2;
     private LinearLayout imageSampler;
     private EditText bookmarkNameText;
     private EditText bookmarkDescriptionText;
@@ -52,8 +52,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
         ((Button)view.findViewById(R.id.save_button)).setOnClickListener(this);
         ((Button)view.findViewById(R.id.cancel_button)).setOnClickListener(this);
         // TODO make type ImageButton to allow deleting
-        imageView1 = (ImageView)view.findViewById(R.id.imageView1);
-        imageView2 = (ImageView)view.findViewById(R.id.imageView2);
+        imageView1 = (ImageButton)view.findViewById(R.id.imageView1);
+        imageView2 = (ImageButton)view.findViewById(R.id.imageView2);
         imageBitmaps = new Bitmap[MAX_NUMBER_OF_IMAGES];
 
         return view;
