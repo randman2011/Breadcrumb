@@ -63,4 +63,8 @@ public class GPSLocationManager implements LocationListener {
     public void startTracking(){
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
     }
+
+    public void setTripID(int tripID){
+        this.tripID = tripID;
+    }
 }

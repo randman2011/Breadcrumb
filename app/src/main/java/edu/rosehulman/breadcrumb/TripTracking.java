@@ -2,6 +2,7 @@ package edu.rosehulman.breadcrumb;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,6 +27,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private FragmentActivity mContext;
+    private GPSLocationManager locManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -31,6 +35,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
         ((Button) v.findViewById(R.id.trip_control)).setOnClickListener(this);
         ((ImageButton)v.findViewById(R.id.fab_add_bookmark)).setOnClickListener(this);
 
+        locManager = new GPSLocationManager(getActivity());
         setUpMapIfNeeded();
         return v;
     }
@@ -62,7 +67,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
+     * call {@link #setUpMap(LatLng coordinate)} once when {@link #mMap} is not null.
      * <p/>
      * If it isn't installed {@link com.google.android.gms.maps.SupportMapFragment} (and
      * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
@@ -81,7 +86,13 @@ public class TripTracking extends Fragment implements View.OnClickListener {
             mMap = ((SupportMapFragment) mContext.getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                setUpMap();
+                Location location = locManager.getCurrentLocation();
+                locManager.endTracking();
+                LatLng coordinate = new LatLng(location.getLatitude(), location.getLongitude());
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 5);
+                mMap.animateCamera(yourLocation);
+
+                setUpMap(coordinate);
             }
         }
     }
@@ -92,7 +103,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-    private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    private void setUpMap(LatLng coordinate) {
+        mMap.addMarker(new MarkerOptions().position(coordinate).title("Marker"));
     }
 }
