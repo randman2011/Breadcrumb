@@ -20,14 +20,19 @@ import java.util.Calendar;
  */
 public class BookmarksList extends Fragment implements View.OnClickListener {
     private ArrayList<Bookmark> bookmarks;
+    private BookmarkDataAdapter dataAdapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bookmarks_list, container, false);
+        dataAdapter = new BookmarkDataAdapter(getActivity());
+        dataAdapter.open();
+
         bookmarks = new ArrayList<Bookmark>();
-        bookmarks.add(new Bookmark("Rose-Hulman Creek", "Cool spot down by the SRC.", new GPSCoordinate(39.484343, -87.328597), Calendar.getInstance()));
-        bookmarks.add(new Bookmark("Secret Place", "My secret place off the trails near campus. Gotta go down to the creek", new GPSCoordinate(39.483421, -87.335351), Calendar.getInstance()));
+        bookmarks = dataAdapter.getAllBookmarks(bookmarks);
+        //bookmarks.add(new Bookmark("Rose-Hulman Creek", "Cool spot down by the SRC.", new GPSCoordinate(39.484343, -87.328597), Calendar.getInstance()));
+        //bookmarks.add(new Bookmark("Secret Place", "My secret place off the trails near campus. Gotta go down to the creek", new GPSCoordinate(39.483421, -87.335351), Calendar.getInstance()));
 
         ListView lsBookmarks = (ListView)view.findViewById(R.id.bookmarks_list_listView);
         lsBookmarks.setAdapter(new BookmarkRowAdapter(view.getContext(), bookmarks));

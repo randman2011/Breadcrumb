@@ -16,6 +16,7 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 
 /**
  * Created by watterlm on 1/23/2015.
@@ -109,6 +110,20 @@ public class BookmarkDataAdapter {
 
     public void deleteBookmark(Bookmark bookmark){
         mDb.delete(TABLE_NAME, KEY_ID + " = " + bookmark.getId(), null);
+    }
+
+    public ArrayList<Bookmark> getAllBookmarks(ArrayList<Bookmark> bookmarks){
+        bookmarks.clear();
+        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null, null);
+        if (!cursor.moveToFirst()){
+            return bookmarks;
+        }
+        do {
+            Bookmark toAdd = getBookmarkFromCursor(cursor);
+            bookmarks.add(toAdd);
+        } while (cursor.moveToNext());
+        Collections.sort(bookmarks);
+        return bookmarks;
     }
 
     public ArrayList<Bitmap> getBitmapFromUriStrings(ArrayList<String> uriString){

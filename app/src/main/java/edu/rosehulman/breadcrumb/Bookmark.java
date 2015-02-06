@@ -6,7 +6,7 @@ import java.util.Calendar;
 /**
  * Created by watterlm on 1/23/2015.
  */
-public class Bookmark {
+public class Bookmark implements Comparable<Bookmark>{
     private long id;
     private String title;
     private String description;
@@ -75,5 +75,13 @@ public class Bookmark {
 
     public void removeImage(String filename){
         //TODO: remove Image
+    }
+
+    @Override
+    public int compareTo(Bookmark another) {
+        long otherId = another.getId();
+        Long other = Long.valueOf(otherId);
+        Long current = Long.valueOf(getId());
+        return other.compareTo(current);
     }
 }
