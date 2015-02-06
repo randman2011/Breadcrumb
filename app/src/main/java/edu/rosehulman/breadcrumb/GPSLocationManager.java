@@ -33,7 +33,9 @@ public class GPSLocationManager implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        trip.addCoordinate(new GPSCoordinate(location.getLatitude(), location.getLongitude()));
+        if (trip != null) {
+            trip.addCoordinate(new GPSCoordinate(location.getLatitude(), location.getLongitude()));
+        }
     }
 
     @Override
