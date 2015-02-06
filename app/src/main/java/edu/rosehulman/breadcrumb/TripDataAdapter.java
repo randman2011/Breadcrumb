@@ -22,12 +22,28 @@ public class TripDataAdapter {
     private static final String KEY_END_DATE = "end_date";
     private static final String KEY_DISTANCE = "distance";
 
+    public static final String CREATE_STATEMENT;
+    static{
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE ");
+        sb.append(TABLE_NAME);
+        sb.append(" (");
+        sb.append(KEY_ID + " integer primary key autoincrement, ");
+        sb.append(KEY_START_DATE + " text, ");
+        sb.append(KEY_END_DATE + " text, ");
+        sb.append(KEY_DISTANCE + " double");
+        sb.append(")");
+        CREATE_STATEMENT = sb.toString();
+    }
+
+    public static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
     private SQLiteDatabase mDb;
-    private TripDBHelper mOpenHelper;
+    private DBHelper mOpenHelper;
     private GPSCoordinateDataAdapter mGPSAdapter;
 
     public TripDataAdapter(Context context){
-        mOpenHelper = new TripDBHelper(context);
+        mOpenHelper = new DBHelper(context);
         mGPSAdapter = new GPSCoordinateDataAdapter(context);
         mGPSAdapter.open();
     }
@@ -103,38 +119,6 @@ public class TripDataAdapter {
     public void deleteTrip(Trip trip){
         mDb.delete(TABLE_NAME, KEY_ID + " = " + trip.getId(), null);
         mGPSAdapter.deleteGPSCoordinates(trip.getId());
-    }
-
-
-    private static class TripDBHelper extends SQLiteOpenHelper {
-        private static final String CREATE_STATEMENT;
-        static{
-            StringBuilder sb = new StringBuilder();
-            sb.append("CREATE TABLE " + TABLE_NAME + " (");
-            sb.append(KEY_ID + " integer primary key autoincrement, ");
-            sb.append(KEY_START_DATE + " text, ");
-            sb.append(KEY_END_DATE + " text, ");
-            sb.append(KEY_DISTANCE + " double");
-            sb.append(")");
-            CREATE_STATEMENT = sb.toString();
-        }
-
-        private static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
-
-        public TripDBHelper(Context context){
-            super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(CREATE_STATEMENT);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(DROP_STATEMENT);
-            db.execSQL(CREATE_STATEMENT);
-        }
     }
 
 }

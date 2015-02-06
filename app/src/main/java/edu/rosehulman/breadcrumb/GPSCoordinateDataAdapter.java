@@ -19,11 +19,32 @@ public class GPSCoordinateDataAdapter {
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_LATITUDE = "latitude";
 
+    public static final String CREATE_STATEMENT;
+    static{
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE ");
+        sb.append(TABLE_NAME);
+        sb.append(" (");
+        sb.append(KEY_ID + " integer primary key autoincrement, ");
+        sb.append(KEY_TRIP_ID + " integer, ");
+        sb.append(KEY_LONGITUDE + " double, ");
+        sb.append(KEY_LATITUDE + " double, ");
+        sb.append("foreign key (");
+        sb.append(KEY_TRIP_ID + ") references ");
+        sb.append(TripDataAdapter.TABLE_NAME + "(");
+        sb.append(TripDataAdapter.KEY_ID + ")");
+        sb.append(")");
+        CREATE_STATEMENT = sb.toString();
+    }
+
+    public static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
+
     private SQLiteDatabase mDb;
-    private GPSCoordinateDBHelper mOpenHelper;
+    private DBHelper mOpenHelper;
 
     public GPSCoordinateDataAdapter(Context context){
-        mOpenHelper = new GPSCoordinateDBHelper(context);
+        mOpenHelper = new DBHelper(context);
     }
 
     public void open(){
@@ -76,42 +97,5 @@ public class GPSCoordinateDataAdapter {
 
     public void deleteGPSCoordinates(long tripID){
         mDb.delete(TABLE_NAME, KEY_TRIP_ID + " = " + tripID, null);
-    }
-
-    private static class GPSCoordinateDBHelper extends SQLiteOpenHelper {
-        private static final String CREATE_STATEMENT;
-        static{
-            StringBuilder sb = new StringBuilder();
-            sb.append("CREATE TABLE ");
-            sb.append(TABLE_NAME);
-            sb.append(" (");
-            sb.append(KEY_ID + " integer primary key autoincrement, ");
-            sb.append(KEY_TRIP_ID + " integer, ");
-            sb.append(KEY_LONGITUDE + " double, ");
-            sb.append(KEY_LATITUDE + " double, ");
-            sb.append("foreign key (");
-            sb.append(KEY_TRIP_ID + ") references ");
-            sb.append(TripDataAdapter.TABLE_NAME + "(");
-            sb.append(TripDataAdapter.KEY_ID + ")");
-            sb.append(")");
-            CREATE_STATEMENT = sb.toString();
-        }
-
-        private static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
-
-        public GPSCoordinateDBHelper(Context context){
-            super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(CREATE_STATEMENT);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(DROP_STATEMENT);
-            db.execSQL(CREATE_STATEMENT);
-        }
     }
 }

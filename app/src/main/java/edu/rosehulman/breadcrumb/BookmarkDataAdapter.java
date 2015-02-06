@@ -30,13 +30,33 @@ public class BookmarkDataAdapter {
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LAST_VISITED ="last_visited";
 
+    public static final String CREATE_STATEMENT;
+
+    static {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE TABLE ");
+        sb.append(TABLE_NAME);
+        sb.append(" (");
+        sb.append(KEY_ID + " integer primary key autoincrement, ");
+        sb.append(KEY_TITLE + " text, ");
+        sb.append(KEY_DESCRIPTION + " text, ");
+        sb.append(KEY_IMAGE_FILENAMES + " text, ");
+        sb.append(KEY_LONGITUDE + " double, ");
+        sb.append(KEY_LATITUDE + " double, ");
+        sb.append(KEY_LAST_VISITED + " long");
+        sb.append(")");
+        CREATE_STATEMENT = sb.toString();
+    }
+
+    public static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
     private SQLiteDatabase mDb;
-    private BookmarkDBHelper mOpenHelper;
+    private DBHelper mOpenHelper;
     private Context context;
 
     public BookmarkDataAdapter(Context c){
         context = c;
-        mOpenHelper = new BookmarkDBHelper(c);
+        mOpenHelper = new DBHelper(c);
     }
 
     public void open(){
@@ -101,42 +121,5 @@ public class BookmarkDataAdapter {
             }
         }
         return bmpArrayList;
-    }
-
-    private static class BookmarkDBHelper extends SQLiteOpenHelper {
-        private static final String CREATE_STATEMENT;
-
-        static {
-            StringBuilder sb = new StringBuilder();
-            sb.append("CREATE TABLE ");
-            sb.append(TABLE_NAME);
-            sb.append(" (");
-            sb.append(KEY_ID + " integer primary key autoincrement, ");
-            sb.append(KEY_TITLE + " text, ");
-            sb.append(KEY_DESCRIPTION + " text, ");
-            sb.append(KEY_IMAGE_FILENAMES + " text, ");
-            sb.append(KEY_LONGITUDE + " double, ");
-            sb.append(KEY_LATITUDE + " double, ");
-            sb.append(KEY_LAST_VISITED + " long");
-            sb.append(")");
-            CREATE_STATEMENT = sb.toString();
-        }
-
-        private static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
-
-        public BookmarkDBHelper(Context context) {
-            super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(CREATE_STATEMENT);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL(DROP_STATEMENT);
-            db.execSQL(CREATE_STATEMENT);
-        }
     }
 }
