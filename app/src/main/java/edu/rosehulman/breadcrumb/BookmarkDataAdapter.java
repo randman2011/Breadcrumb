@@ -53,7 +53,7 @@ public class BookmarkDataAdapter {
         row.put(KEY_DESCRIPTION, bookmark.getDescription());
         ArrayList<String> fileNames = bookmark.getImageFilenames();
         if (fileNames != null) {
-            row.put(KEY_IMAGE_FILENAMES, (Constants.constants.serialize((String[]) bookmark.getImageFilenames().toArray(new String[bookmark.getImageFilenames().size()]))));
+            row.put(KEY_IMAGE_FILENAMES, (Constants.serialize((String[]) bookmark.getImageFilenames().toArray(new String[bookmark.getImageFilenames().size()]))));
         } else {
             row.put(KEY_IMAGE_FILENAMES, "");
         }
@@ -68,7 +68,7 @@ public class BookmarkDataAdapter {
         long id = cursor.getLong(cursor.getColumnIndexOrThrow(KEY_ID));
         String title = cursor.getString(cursor.getColumnIndexOrThrow(KEY_TITLE));
         String description = cursor.getString(cursor.getColumnIndexOrThrow(KEY_DESCRIPTION));
-        String[] images = Constants.constants.deserialize(cursor.getString(cursor.getColumnIndexOrThrow(KEY_IMAGE_FILENAMES)));
+        String[] images = Constants.deserialize(cursor.getString(cursor.getColumnIndexOrThrow(KEY_IMAGE_FILENAMES)));
         double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LONGITUDE));
         double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LATITUDE));
         GPSCoordinate coord = new GPSCoordinate(longitude, latitude);
@@ -125,7 +125,7 @@ public class BookmarkDataAdapter {
         private static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
         public BookmarkDBHelper(Context context) {
-            super(context, Constants.constants.DATABASE_NAME, null, Constants.constants.DATABASE_VERSION);
+            super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         }
 
         @Override

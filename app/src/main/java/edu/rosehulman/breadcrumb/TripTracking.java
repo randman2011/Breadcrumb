@@ -48,6 +48,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
 
         locManager = new GPSLocationManager(getActivity());
         tripAdapter = new TripDataAdapter(getActivity());
+        tripAdapter.open();
         setUpMapIfNeeded();
         return v;
     }
@@ -115,7 +116,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
             if (mMap != null) {
                 LatLng coordinate = locManager.getCurrentLocation();
                 locManager.endTracking();
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.constants.MAP_ZOOM);
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
                 mMap.animateCamera(yourLocation);
 
                 setUpMap(coordinate);

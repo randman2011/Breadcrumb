@@ -35,7 +35,7 @@ public class BookmarksList extends Fragment implements View.OnClickListener {
         lsBookmarks.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                Log.d(Constants.constants.LOG_NAME, bookmarks.get(position).getTitle());
+                Log.d(Constants.LOG_NAME, bookmarks.get(position).getTitle());
                 Intent bookmarkIntent = new Intent(view.getContext(), BookmarkSummaryActivity.class);
                 startActivity(bookmarkIntent);
             }

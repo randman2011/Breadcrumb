@@ -38,7 +38,7 @@ public class GPSCoordinateDataAdapter {
         ContentValues row = new ContentValues();
         row.put(KEY_LATITUDE, coordinate.getLatitude());
         row.put(KEY_LONGITUDE, coordinate.getLongitude());
-        return null;
+        return row;
     }
 
     private GPSCoordinate getGPSCoordinateFromCursor(Cursor cursor){
@@ -100,7 +100,7 @@ public class GPSCoordinateDataAdapter {
         private static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
         public GPSCoordinateDBHelper(Context context){
-            super(context, Constants.constants.DATABASE_NAME, null, Constants.constants.DATABASE_VERSION);
+            super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         }
 
         @Override

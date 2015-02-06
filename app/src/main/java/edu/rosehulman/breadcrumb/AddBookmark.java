@@ -47,6 +47,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     private BookmarkDataAdapter bookmarkAdapter;
     private GPSLocationManager locManager;
     private GPSCoordinate coordinate;
+    private Constants.FragmentCloseListener fragCloseListener;
 
 
     @Nullable
@@ -78,7 +79,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.cancel_button:
                 // TODO Send signal to MainActivity to close this in FragmentManager
-                return;
+
             case R.id.save_button:
                 addBookmark();
                 // TODO Send signal to MainActivity to close this in FragmentManager
@@ -138,5 +139,26 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
         Bookmark bookmark = new Bookmark(title, description, coordinate, lastVisited);
         bookmark.setImageFilenames(imageLocations);
         bookmarkAdapter.addBookmark(bookmark);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            fragCloseListener = (Constants.FragmentCloseListener) activity;
+        } catch (ClassCastException e) {
+            throw new RuntimeException(getActivity().getClass().getSimpleName() + " must implement FragmentCloseListener", e);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragCloseListener.onFragmentClose(getTag());
+            }
+        });
     }
 }

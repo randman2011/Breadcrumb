@@ -38,7 +38,7 @@ public class TripHistory extends Fragment implements View.OnClickListener {
         lsTrips.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                Log.d(Constants.constants.LOG_NAME, trips.get(position).getStartDate().toString());
+                Log.d(Constants.LOG_NAME, trips.get(position).getStartDate().toString());
                 Intent tripIntent = new Intent(view.getContext(), TripSummaryActivity.class);
                 startActivity(tripIntent);
             }

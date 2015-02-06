@@ -16,7 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends ActionBarActivity implements Constants.constants.FragmentCloseListener{
+public class MainActivity extends ActionBarActivity implements Constants.FragmentCloseListener{
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity implements Constants.constan
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 selectItem(position);
-                Log.d(Constants.constants.LOG_NAME, "Drawer list item clicked");
+                Log.d(Constants.LOG_NAME, "Drawer list item clicked");
             }
         });
 
@@ -149,7 +149,7 @@ public class MainActivity extends ActionBarActivity implements Constants.constan
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-            Log.d(Constants.constants.LOG_NAME, "Bookmark Summary selected");
+            Log.d(Constants.LOG_NAME, "Bookmark Summary selected");
         }else if (mMenuItems[position].toString().equals(getString(R.string.menu_tracking))){
             Fragment fragment = new TripTracking();
 
@@ -157,7 +157,7 @@ public class MainActivity extends ActionBarActivity implements Constants.constan
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-            Log.d(Constants.constants.LOG_NAME, "Tracking selected");
+            Log.d(Constants.LOG_NAME, "Tracking selected");
         }else if (mMenuItems[position].toString().equals(getString(R.string.menu_trip_history))){
             Fragment fragment = new TripHistory();
 
@@ -165,10 +165,10 @@ public class MainActivity extends ActionBarActivity implements Constants.constan
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-            Log.d(Constants.constants.LOG_NAME, "Trip History selected");
+            Log.d(Constants.LOG_NAME, "Trip History selected");
         }else if(mMenuItems[position].toString().equals(getString(R.string.menu_exit))){
 
-            Log.d(Constants.constants.LOG_NAME, "Finish selected");
+            Log.d(Constants.LOG_NAME, "Finish selected");
             finish();
         }
 

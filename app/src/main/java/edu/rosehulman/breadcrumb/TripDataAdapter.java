@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by watterlm on 1/23/2015.
@@ -28,6 +29,7 @@ public class TripDataAdapter {
     public TripDataAdapter(Context context){
         mOpenHelper = new TripDBHelper(context);
         mGPSAdapter = new GPSCoordinateDataAdapter(context);
+        mGPSAdapter.open();
     }
 
     public void open(){
@@ -39,12 +41,12 @@ public class TripDataAdapter {
     }
 
     private ContentValues getContentValues(Trip trip){
-        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
         ContentValues row = new ContentValues();
         row.put(KEY_START_DATE, simpleFormat.format(trip.getStartDate().getTime()));
         row.put(KEY_END_DATE, simpleFormat.format(trip.getEndDate().getTime()));
         row.put(KEY_DISTANCE, trip.getDistance());
-        return null;
+        return row;
     }
 
     private Cursor getTripsCursor(){
@@ -65,12 +67,12 @@ public class TripDataAdapter {
     }
 
     private Trip getTripFromCursor(Cursor cursor){
-        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
+        Trip trip = new Trip();
         try {
             Date endDate = simpleFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow(KEY_END_DATE)));
             Date startDate = simpleFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow(KEY_START_DATE)));
 
-            Trip trip = new Trip();
             trip.setId(cursor.getLong(cursor.getColumnIndexOrThrow(KEY_ID)));
 
             Calendar end = Calendar.getInstance();
@@ -87,7 +89,7 @@ public class TripDataAdapter {
         } catch (ParseException e) {
             return null;
         }
-        return null;
+        return trip;
     }
 
     public long addTrip(Trip trip){
@@ -108,9 +110,7 @@ public class TripDataAdapter {
         private static final String CREATE_STATEMENT;
         static{
             StringBuilder sb = new StringBuilder();
-            sb.append("CREATE TABLE ");
-            sb.append(TABLE_NAME);
-            sb.append(" (");
+            sb.append("CREATE TABLE " + TABLE_NAME + " (");
             sb.append(KEY_ID + " integer primary key autoincrement, ");
             sb.append(KEY_START_DATE + " text, ");
             sb.append(KEY_END_DATE + " text, ");
@@ -122,7 +122,7 @@ public class TripDataAdapter {
         private static final String DROP_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
         public TripDBHelper(Context context){
-            super(context, Constants.constants.DATABASE_NAME, null, Constants.constants.DATABASE_VERSION);
+            super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
         }
 
         @Override
