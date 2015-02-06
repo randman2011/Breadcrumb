@@ -23,6 +23,7 @@ import static android.widget.ListView.*;
  * Created by turnerrs on 1/25/2015.
  */
 public class BookmarksList extends Fragment implements View.OnClickListener {
+    public static String KEY_ID = "KEY_ID";
     private ArrayList<Bookmark> bookmarks;
     private BookmarkDataAdapter dataAdapter;
     private BookmarkRowAdapter rowAdapter;
@@ -36,8 +37,7 @@ public class BookmarksList extends Fragment implements View.OnClickListener {
 
         bookmarks = new ArrayList<Bookmark>();
         bookmarks = dataAdapter.getAllBookmarks(bookmarks);
-        //bookmarks.add(new Bookmark("Rose-Hulman Creek", "Cool spot down by the SRC.", new GPSCoordinate(39.484343, -87.328597), Calendar.getInstance()));
-        //bookmarks.add(new Bookmark("Secret Place", "My secret place off the trails near campus. Gotta go down to the creek", new GPSCoordinate(39.483421, -87.335351), Calendar.getInstance()));
+
         rowAdapter = new BookmarkRowAdapter(view.getContext(), bookmarks);
         ListView lsBookmarks = (ListView)view.findViewById(R.id.bookmarks_list_listView);
         lsBookmarks.setAdapter(rowAdapter);
@@ -47,6 +47,7 @@ public class BookmarksList extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 Log.d(Constants.LOG_NAME, bookmarks.get(position).getTitle());
                 Intent bookmarkIntent = new Intent(view.getContext(), BookmarkSummaryActivity.class);
+                bookmarkIntent.putExtra(KEY_ID, bookmarks.get(position).getId());
                 startActivity(bookmarkIntent);
             }
         });

@@ -1,5 +1,6 @@
 package edu.rosehulman.breadcrumb;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,6 +22,11 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
         setContentView(R.layout.activity_bookmark_summmary);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setUpMapIfNeeded();
+
+        Intent intent = getIntent();
+        long bookmarkId = intent.getLongExtra(BookmarksList.KEY_ID, 0);
+        
+
     }
 
 
