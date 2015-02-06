@@ -117,7 +117,7 @@ public class BookmarkDataAdapter {
             sb.append(KEY_IMAGE_FILENAMES + " text, ");
             sb.append(KEY_LONGITUDE + " double, ");
             sb.append(KEY_LATITUDE + " double, ");
-            sb.append(KEY_LAST_VISITED + " long ");
+            sb.append(KEY_LAST_VISITED + " long");
             sb.append(")");
             CREATE_STATEMENT = sb.toString();
         }

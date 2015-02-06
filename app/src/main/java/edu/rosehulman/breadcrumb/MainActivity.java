@@ -16,7 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends ActionBarActivity implements Constants.FragmentCloseListener{
+public class MainActivity extends ActionBarActivity {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -24,11 +24,6 @@ public class MainActivity extends ActionBarActivity implements Constants.Fragmen
     private CharSequence mTitle;
     private ListView mDrawerList;
     private String[] mMenuItems;
-
-    @Override
-    public void onFragmentClose(String tag) {
-        getSupportFragmentManager().popBackStack();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +81,7 @@ public class MainActivity extends ActionBarActivity implements Constants.Fragmen
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        selectItem(0);
     }
 
     @Override
