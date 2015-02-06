@@ -51,4 +51,8 @@ public class BookmarkRowAdapter extends BaseAdapter{
         view.setTextSize(24);
         return view;
     }
+
+    public void remove(){
+        mNumRows--;
+    }
 }

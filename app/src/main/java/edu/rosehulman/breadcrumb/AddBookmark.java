@@ -47,6 +47,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     private BookmarkDataAdapter bookmarkAdapter;
     private GPSLocationManager locManager;
     private GPSCoordinate coordinate;
+    private Button btnSave;
 
 
     @Nullable
@@ -58,7 +59,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
         bookmarkNameText = (EditText)view.findViewById(R.id.bookmark_name);
         bookmarkDescriptionText = (EditText)view.findViewById(R.id.bookmark_description);
         ((ImageButton)view.findViewById(R.id.image_add_button)).setOnClickListener(this);
-        ((Button)view.findViewById(R.id.save_button)).setOnClickListener(this);
+        btnSave = ((Button)view.findViewById(R.id.save_button));
+        btnSave.setOnClickListener(this);
         ((Button)view.findViewById(R.id.cancel_button)).setOnClickListener(this);
         imageView1 = (ImageButton)view.findViewById(R.id.imageView1);
         imageView2 = (ImageButton)view.findViewById(R.id.imageView2);
@@ -81,6 +83,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
 
             case R.id.save_button:
                 addBookmark();
+                btnSave.setEnabled(false);
+
                 // TODO Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.image_add_button:
