@@ -11,7 +11,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1"
+        android:layout_weight="2"
         tools:context="edu.rosehulman.breadcrumb.BookmarkSummaryActivity" />
 
     <LinearLayout
@@ -23,20 +23,36 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:text="Bookmark Title"
             android:id="@+id/bookmark_title"
             android:textColor="@color/text_color_white"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:text="@string/bookmark_last_visited"
             android:id="@+id/last_visited"
             android:textColor="@color/text_color_white" />
 
     </LinearLayout>
 
+    <HorizontalScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:adjustViewBounds="true"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/photo_view">
+
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
     <ScrollView
         android:layout_width="match_parent"

@@ -1,5 +1,11 @@
 package edu.rosehulman.breadcrumb;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -10,15 +16,15 @@ public class Bookmark implements Comparable<Bookmark>{
     private long id;
     private String title;
     private String description;
-    private ArrayList<String> imageFilenames;
+    private ArrayList<String> imageURIs;
     private GPSCoordinate coordinate;
-    private Calendar lastVisted;
+    private Calendar lastVisited;
 
     public Bookmark(String title, String description, GPSCoordinate coordinate, Calendar lastVisted){
         this.title = title;
         this.description = description;
         this.coordinate = coordinate;
-        this.lastVisted = lastVisted;
+        this.lastVisited = lastVisted;
     }
 
     public long getId() {
@@ -45,20 +51,20 @@ public class Bookmark implements Comparable<Bookmark>{
         this.description = description;
     }
 
-    public Calendar getLastVisted() {
-        return lastVisted;
+    public Calendar getLastVisited() {
+        return lastVisited;
     }
 
-    public void setLastVisted(Calendar lastVisted) {
-        this.lastVisted = lastVisted;
+    public void setLastVisited(Calendar lastVisted) {
+        this.lastVisited = lastVisted;
     }
 
-    public ArrayList<String> getImageFilenames() {
-        return imageFilenames;
+    public ArrayList<String> getImageURIs() {
+        return imageURIs;
     }
 
-    public void setImageFilenames(ArrayList<String> imageFilenames) {
-        this.imageFilenames = imageFilenames;
+    public void setImageURIs(ArrayList<String> imageURIs) {
+        this.imageURIs = imageURIs;
     }
 
     public GPSCoordinate getCoordinate() {
@@ -83,5 +89,17 @@ public class Bookmark implements Comparable<Bookmark>{
         Long other = Long.valueOf(otherId);
         Long current = Long.valueOf(getId());
         return other.compareTo(current);
+    }
+
+    public ArrayList<Bitmap> getBitmapFromUriStrings(Context context){
+        ArrayList<Bitmap> bmpArrayList = new ArrayList<>();
+        for (int i = 0; i < this.imageURIs.size(); i++) {
+            try {
+                bmpArrayList.add(MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(this.imageURIs.get(i))));
+            } catch (Exception e) {
+                Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+        return bmpArrayList;
     }
 }

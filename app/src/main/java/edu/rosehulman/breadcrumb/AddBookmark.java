@@ -82,9 +82,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                 // TODO Send signal to MainActivity to close this in FragmentManager
 
             case R.id.save_button:
-                addBookmark();
                 btnSave.setEnabled(false);
-
+                addBookmark();
                 // TODO Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.image_add_button:
@@ -140,7 +139,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
         String description = ((EditText)getActivity().findViewById(R.id.bookmark_description)).getText().toString();
         Calendar lastVisited = Calendar.getInstance();
         Bookmark bookmark = new Bookmark(title, description, coordinate, lastVisited);
-        bookmark.setImageFilenames(imageLocations);
+        bookmark.setImageURIs(imageLocations);
         bookmarkAdapter.addBookmark(bookmark);
     }
 }

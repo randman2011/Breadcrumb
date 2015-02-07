@@ -68,15 +68,15 @@ public class BookmarkDataAdapter {
         ContentValues row = new ContentValues();
         row.put(KEY_TITLE, bookmark.getTitle());
         row.put(KEY_DESCRIPTION, bookmark.getDescription());
-        ArrayList<String> fileNames = bookmark.getImageFilenames();
-        if (fileNames != null) {
-            row.put(KEY_IMAGE_FILENAMES, (Constants.serialize((String[]) bookmark.getImageFilenames().toArray(new String[bookmark.getImageFilenames().size()]))));
+        ArrayList<String> imageURIs = bookmark.getImageURIs();
+        if (imageURIs != null) {
+            row.put(KEY_IMAGE_FILENAMES, (Constants.serialize((String[]) bookmark.getImageURIs().toArray(new String[bookmark.getImageURIs().size()]))));
         } else {
             row.put(KEY_IMAGE_FILENAMES, "");
         }
         row.put(KEY_LONGITUDE, bookmark.getCoordinate().getLongitude());
         row.put(KEY_LATITUDE, bookmark.getCoordinate().getLatitude());
-        row.put(KEY_LAST_VISITED, bookmark.getLastVisted().getTimeInMillis());
+        row.put(KEY_LAST_VISITED, bookmark.getLastVisited().getTimeInMillis());
 
         return row;
     }
@@ -88,11 +88,11 @@ public class BookmarkDataAdapter {
         String[] images = Constants.deserialize(cursor.getString(cursor.getColumnIndexOrThrow(KEY_IMAGE_FILENAMES)));
         double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LONGITUDE));
         double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_LATITUDE));
-        GPSCoordinate coord = new GPSCoordinate(longitude, latitude);
+        GPSCoordinate coord = new GPSCoordinate(latitude,longitude);
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(cursor.getLong(cursor.getColumnIndexOrThrow(KEY_LAST_VISITED)));
         Bookmark bookmark = new Bookmark(title, description, coord, cal);
-        bookmark.setImageFilenames(new ArrayList<String>(Arrays.asList(images)));
+        bookmark.setImageURIs(new ArrayList<String>(Arrays.asList(images)));
         bookmark.setId(id);
         return bookmark;
     }
@@ -122,15 +122,13 @@ public class BookmarkDataAdapter {
         return bookmarks;
     }
 
-    public ArrayList<Bitmap> getBitmapFromUriStrings(ArrayList<String> uriString){
-        ArrayList<Bitmap> bmpArrayList = new ArrayList<>();
-        for (int i = 0; i < uriString.size(); i++) {
-            try {
-                bmpArrayList.add(MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uriString.get(i))));
-            } catch (Exception e) {
-                Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-            }
+    public Bookmark getBookmark(long id){
+        String[] projection = new String[] { KEY_ID, KEY_DESCRIPTION, KEY_TITLE, KEY_LATITUDE, KEY_LONGITUDE, KEY_LAST_VISITED, KEY_IMAGE_FILENAMES };
+        String selection = KEY_ID + " + " + id;
+        Cursor c = mDb.query(TABLE_NAME, projection, selection, null, null, null, null, null);
+        if (c != null && c.moveToFirst()){
+            return getBookmarkFromCursor(c);
         }
-        return bmpArrayList;
+        return null;
     }
 }

@@ -1,20 +1,35 @@
 package edu.rosehulman.breadcrumb;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.GridView;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+
 
 public class BookmarkSummaryActivity extends ActionBarActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private BookmarkDataAdapter dataAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +40,41 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         long bookmarkId = intent.getLongExtra(BookmarksList.KEY_ID, 0);
-        
+
+        dataAdapter = new BookmarkDataAdapter(this);
+        dataAdapter.open();
+        Bookmark bookmark = dataAdapter.getBookmark(bookmarkId);
+        GPSCoordinate coord = bookmark.getCoordinate();
+        LatLng coordinate = new LatLng(coord.getLatitude(), coord.getLongitude());
+
+        if (mMap != null){
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
+            mMap.animateCamera(yourLocation);
+            setUpMap(coordinate, bookmark.getTitle());
+        }
+
+        ((TextView)findViewById(R.id.bookmark_title)).setText(bookmark.getTitle());
+
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+
+        ((TextView)findViewById(R.id.last_visited)).setText(getString(R.string.bookmark_last_visited, simpleFormat.format(bookmark.getLastVisited().getTime())));
+
+        ArrayList<Bitmap> photos = bookmark.getBitmapFromUriStrings(this);
+        LinearLayout photoView = (LinearLayout)findViewById(R.id.photo_view);
+        //HorizontalScrollView photoView = (HorizontalScrollView)findViewById(R.id.photo_view);
+
+        for (Bitmap photo : photos){
+            ImageView image = new ImageView(photoView.getContext());
+            image.setImageBitmap(photo);
+            image.setAdjustViewBounds(true);
+            photoView.addView(image);
+        }
+
+
+        ((TextView)findViewById(R.id.description)).setText(bookmark.getDescription() + photos.size());
+
+
+
 
     }
 
@@ -54,8 +103,7 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
+     * installed) and the map has not already been instantiated..
      * <p/>
      * If it isn't installed {@link com.google.android.gms.maps.SupportMapFragment} (and
      * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
@@ -74,7 +122,6 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                setUpMap();
             }
         }
     }
@@ -85,8 +132,8 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-    private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    private void setUpMap(LatLng coordinate, String title) {
+        mMap.addMarker(new MarkerOptions().position(coordinate).title(title));
     }
 
 }
