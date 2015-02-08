@@ -7,20 +7,16 @@ import java.util.Date;
 /**
  * Created by watterlm on 1/23/2015.
  */
-public class Trip {
+public class Trip implements Comparable<Trip>{
     private long id;
     private Calendar startDate;
     private Calendar endDate;
     private double distance = 0;
     private ArrayList<GPSCoordinate> coordinates;
 
-    public Trip(Calendar date){
-        this.startDate = date;
-        this.coordinates = new ArrayList<GPSCoordinate>();
-    }
-
     public Trip(){
-
+        this.coordinates = new ArrayList<GPSCoordinate>();
+        this.startDate = Calendar.getInstance();
     }
 
     public Calendar getStartDate() {
@@ -116,9 +112,9 @@ public class Trip {
         return distanceKM * milesPerKM;
     }
 
-    public int[] calculateDuration(){
+    public String calculateDuration(){
         // Define return string
-        int[] times = {0, 0, 0};
+        String duration = "";
         // Define conversion units
         long minCon = 60L * 1000L;
         long hourCon = 60L * 60L * 1000L;
@@ -133,26 +129,88 @@ public class Trip {
         // Determine day, hour, and minute difference
         int timeDiffDay = (int)(timeDiffMilli / dayCon);
         if(timeDiffDay >= 1){
-            times[0] = timeDiffDay;
+            if (timeDiffDay == 1){
+                duration += String.format("%d day", timeDiffDay);
+            }else {
+                duration += String.format("%d days", timeDiffDay);
+            }
             timeDiffMilli = timeDiffMilli - timeDiffDay * dayCon;
         }
 
         int timeDiffHour = (int)(timeDiffMilli / hourCon);
         if(timeDiffHour >= 1){
-            times[1] = timeDiffHour;
+            if (timeDiffHour == 1){
+                duration += String.format("%d hr", timeDiffHour);
+            }else {
+                duration += String.format("%d hrs", timeDiffHour);
+            }
             timeDiffMilli = timeDiffMilli - timeDiffHour * hourCon;
         }
 
         int timeDiffMin = (int) (timeDiffMilli / minCon);
         if(timeDiffMin >= 1){
-            times[2] = timeDiffMin;
+            if (timeDiffMin == 1){
+                duration += String.format("%d minute", timeDiffMin);
+            }else {
+                duration += String.format("%d minutes", timeDiffMin);
+            }
+        }else{
+            duration += "0 minutes";
         }
 
-        return times;
+        return duration;
     }
 
-    public double calculateAverageSpeed(int[] times, double distance){
+    private int[] getTimes(){
+        // Define return string
+        int[] duration = {0,0,0 };
+        // Define conversion units
+        long minCon = 60L * 1000L;
+        long hourCon = 60L * 60L * 1000L;
+        long dayCon = 24L * 60L * 60L * 1000L;
+        // Get the milliseconds of each date
+        long startMilli = startDate.getTimeInMillis();
+        long endMilli = endDate.getTimeInMillis();
+
+        // Do difference
+        long timeDiffMilli = endMilli - startMilli;
+
+        // Determine day, hour, and minute difference
+        int timeDiffDay = (int)(timeDiffMilli / dayCon);
+        if(timeDiffDay >= 1){
+            duration[0] = timeDiffDay;
+            timeDiffMilli = timeDiffMilli - timeDiffDay * dayCon;
+        }
+
+        int timeDiffHour = (int)(timeDiffMilli / hourCon);
+        if(timeDiffHour >= 1){
+            duration[1] = timeDiffHour;
+            timeDiffMilli = timeDiffMilli - timeDiffHour * hourCon;
+        }
+
+        int timeDiffMin = (int) (timeDiffMilli / minCon);
+        if(timeDiffMin >= 1){
+            duration[2] = timeDiffMin;
+        }
+        return duration;
+    }
+
+    public double calculateAverageSpeed(){
+        int[] times = getTimes();
+        double distance = getDistance();
         double hours = times[0]*24.0 + times[1] + times[2]/60.0;
-        return distance/hours;
+        if (hours > 0) {
+            return distance / hours;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public int compareTo(Trip another) {
+        long otherId = another.getId();
+        Long other = Long.valueOf(otherId);
+        Long current = Long.valueOf(getId());
+        return other.compareTo(current);
     }
 }

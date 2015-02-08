@@ -24,7 +24,7 @@ public class TripRow extends RelativeLayout {
         dateView.setText(date);
     }
 
-    public void setDistanceeText(String distance){
+    public void setDistanceText(String distance){
         distanceView.setText(distance);
     }
 }

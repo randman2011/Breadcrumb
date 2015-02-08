@@ -30,6 +30,7 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private BookmarkDataAdapter dataAdapter;
+    private Bookmark bookmark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
 
         dataAdapter = new BookmarkDataAdapter(this);
         dataAdapter.open();
-        Bookmark bookmark = dataAdapter.getBookmark(bookmarkId);
+        bookmark = dataAdapter.getBookmark(bookmarkId);
         GPSCoordinate coord = bookmark.getCoordinate();
         LatLng coordinate = new LatLng(coord.getLatitude(), coord.getLongitude());
 
@@ -73,7 +74,7 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
 
         ((TextView)findViewById(R.id.description)).setText(bookmark.getDescription() + photos.size());
 
-
+        dataAdapter.close();
 
 
     }

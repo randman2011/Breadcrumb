@@ -70,6 +70,6 @@ public class GPSLocationManager implements LocationListener {
 
     public void startTracking(Trip trip, GoogleMap mMap){
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
-        this.trip = new Trip(Calendar.getInstance());
+        this.trip = new Trip();
     }
 }

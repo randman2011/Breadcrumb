@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -64,12 +66,21 @@ public class TripDataAdapter {
         return row;
     }
 
-    private Cursor getTripsCursor(){
-        String[] projection = new String[] { KEY_ID, KEY_START_DATE, KEY_END_DATE, KEY_DISTANCE };
-        return mDb.query(TABLE_NAME, projection, null, null, null, null, KEY_ID + " DESC");
+    public ArrayList<Trip> getAllTrips(ArrayList<Trip> trips){
+        trips.clear();
+        Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null, null);
+        if (!cursor.moveToFirst()){
+            return trips;
+        }
+        do {
+            Trip toAdd = getTripFromCursor(cursor);
+            trips.add(toAdd);
+        } while (cursor.moveToNext());
+        Collections.sort(trips);
+        return trips;
     }
 
-    private Trip getTrip(long id){
+    public Trip getTrip(long id){
         String[] projection = new String[] { KEY_ID, KEY_START_DATE, KEY_END_DATE, KEY_DISTANCE };
         String selection = KEY_ID + " + " + id;
         Cursor c = mDb.query(TABLE_NAME, projection, selection, null, null, null, null, null);
@@ -95,7 +106,7 @@ public class TripDataAdapter {
             trip.setEndDate(end);
 
             Calendar start = Calendar.getInstance();
-            end.setTime(startDate);
+            start.setTime(startDate);
             trip.setStartDate(start);
 
             trip.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(KEY_DISTANCE)));
