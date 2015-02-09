@@ -37,9 +37,9 @@ public class TripSummaryActivity extends ActionBarActivity {
         ArrayList<String> tripStrings = new ArrayList<String>();
         tripStrings.add(getString(R.string.trip_summary_date, simpleFormat.format(trip.getStartDate().getTime())));
         tripStrings.add(getString(R.string.trip_summary_duration, trip.calculateDuration()));
-        tripStrings.add(getString(R.string.trip_summary_distance, trip.getDistance()) + " km");
+        tripStrings.add(String.format(getString(R.string.trip_summary_distance), trip.getDistance()," km"));
         //TODO:Add case for miles
-        tripStrings.add(getString(R.string.trip_summary_average_speed, trip.calculateAverageSpeed()) + " kmph");
+        tripStrings.add(String.format(getString(R.string.trip_summary_average_speed), trip.calculateAverageSpeed(), " kmph"));
         // TODO: Add case for miles
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tripStrings);

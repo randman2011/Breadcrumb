@@ -82,7 +82,7 @@ public class TripDataAdapter {
 
     public Trip getTrip(long id){
         String[] projection = new String[] { KEY_ID, KEY_START_DATE, KEY_END_DATE, KEY_DISTANCE };
-        String selection = KEY_ID + " + " + id;
+        String selection = KEY_ID + " = " + id;
         Cursor c = mDb.query(TABLE_NAME, projection, selection, null, null, null, null, null);
         if (c != null && c.moveToFirst()){
             Trip trip = getTripFromCursor(c);

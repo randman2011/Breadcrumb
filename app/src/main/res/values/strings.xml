@@ -30,7 +30,7 @@
     <string name="delete_trip_message">Are you sure you want to delete your trip from %s? You will not be able to undo this deletion.</string>
     <string name="trip_summary_date">Start Date: %s</string>
     <string name="trip_summary_duration">Duration: %s</string>
-    <string name="trip_summary_distance">Distance: %s</string>
-    <string name="trip_summary_average_speed">Average Speed: %s</string>
+    <string name="trip_summary_distance" formatted="false">Distance: %.2f %s</string>
+    <string name="trip_summary_average_speed" formatted="false">Average Speed: %.2f %s</string>
 
 </resources>

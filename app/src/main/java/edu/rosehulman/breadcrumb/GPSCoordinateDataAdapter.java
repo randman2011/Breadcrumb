@@ -72,7 +72,7 @@ public class GPSCoordinateDataAdapter {
     public ArrayList<GPSCoordinate> getAllCoordinates(ArrayList<GPSCoordinate> coordinates, long tripID){
         coordinates.clear();
         String[] projection = new String[] { KEY_ID, KEY_LATITUDE, KEY_LONGITUDE, KEY_TRIP_ID};
-        String selection = KEY_TRIP_ID + " + " + tripID;
+        String selection = KEY_TRIP_ID + " = " + tripID;
         Cursor cursor = mDb.query(TABLE_NAME, projection, selection, null, null, null, null, null);
         if (!cursor.moveToFirst()){
             return coordinates;

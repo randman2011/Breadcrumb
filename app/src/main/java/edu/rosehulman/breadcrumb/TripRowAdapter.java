@@ -16,7 +16,7 @@ public class TripRowAdapter extends BaseAdapter {
     private Context mContext;
     private int mNumRows;
     private ArrayList<Trip> trips;
-    private final SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.US);
+    private final SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat("MM/dd/yyyy h:mm aaa", Locale.US);
 
 
     public TripRowAdapter(Context context, ArrayList<Trip> trips){
@@ -48,7 +48,7 @@ public class TripRowAdapter extends BaseAdapter {
             view = (TripRow) convertView;
         }
 
-        view.setDateText(SIMPLE_FORMAT.format(trips.get(position).getStartDate().getTime()) + "  : " + trips.get(position).getId());
+        view.setDateText(SIMPLE_FORMAT.format(trips.get(position).getStartDate().getTime()));
 
         String distanceText = mContext.getString(R.string.distance_formater, trips.get(position).getDistance());
         distanceText += " " + mContext.getString(R.string.km);
