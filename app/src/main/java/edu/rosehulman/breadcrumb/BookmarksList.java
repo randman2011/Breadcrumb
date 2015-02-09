@@ -85,7 +85,6 @@ public class BookmarksList extends Fragment implements View.OnClickListener {
                                 Log.d(Constants.LOG_NAME, bookmark.getTitle() + " was deleted.");
                                 dataAdapter.deleteBookmark(bookmark);
                                 bookmarks.remove(bookmark);
-                                rowAdapter.remove();
                                 rowAdapter.notifyDataSetChanged();
                             }
                         });

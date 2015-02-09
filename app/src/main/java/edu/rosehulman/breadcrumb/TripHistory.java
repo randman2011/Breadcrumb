@@ -88,7 +88,6 @@ public class TripHistory extends Fragment implements View.OnClickListener {
                                 Log.d(Constants.LOG_NAME, SIMPLE_FORMAT.format(trip.getStartDate().getTime()) + " was deleted.");
                                 dataAdapter.deleteTrip(trip);
                                 trips.remove(trip);
-                                rowAdapter.remove();
                                 rowAdapter.notifyDataSetChanged();
                             }
                         });

@@ -13,18 +13,16 @@ import java.util.ArrayList;
  */
 public class BookmarkRowAdapter extends BaseAdapter{
     private Context mContext;
-    private int mNumRows;
     private ArrayList<Bookmark> bookmarks;
 
     public BookmarkRowAdapter(Context context, ArrayList<Bookmark> bookmarks){
         this.mContext = context;
-        this.mNumRows = bookmarks.size();
         this.bookmarks = bookmarks;
     }
 
     @Override
     public int getCount() {
-        return mNumRows;
+        return bookmarks.size();
     }
 
     @Override
@@ -50,9 +48,5 @@ public class BookmarkRowAdapter extends BaseAdapter{
         view.setText(bookmarks.get(position).getTitle());
         view.setTextSize(24);
         return view;
-    }
-
-    public void remove(){
-        mNumRows--;
     }
 }

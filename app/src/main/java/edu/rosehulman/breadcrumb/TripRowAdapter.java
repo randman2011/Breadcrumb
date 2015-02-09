@@ -14,19 +14,17 @@ import java.util.Locale;
  */
 public class TripRowAdapter extends BaseAdapter {
     private Context mContext;
-    private int mNumRows;
     private ArrayList<Trip> trips;
     private final SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat("MM/dd/yyyy h:mm aaa", Locale.US);
 
 
     public TripRowAdapter(Context context, ArrayList<Trip> trips){
         this.mContext = context;
-        this.mNumRows = trips.size();
         this.trips = trips;
     }
     @Override
     public int getCount() {
-        return mNumRows;
+        return trips.size();
     }
 
     @Override
@@ -55,9 +53,5 @@ public class TripRowAdapter extends BaseAdapter {
         //TODO: Add case for miles
         view.setDistanceText(distanceText);
         return view;
-    }
-
-    public void remove(){
-        mNumRows--;
     }
 }
