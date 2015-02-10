@@ -1,6 +1,7 @@
 package edu.rosehulman.breadcrumb;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -35,10 +36,18 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
     private Trip trip;
     private TripDataAdapter tripAdapter;
     private MapFragment mapFragment;
+    private static View staticView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.fragment_trip_tracking, container, false);
+
+        mapFragment = MapFragment.newInstance();
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        ft.add(R.id.map_container, mapFragment);
+        ft.commit();
+
+
         tripControl = ((Button) v.findViewById(R.id.trip_control));
         tripControl.setOnClickListener(this);
         ((ImageButton)v.findViewById(R.id.fab_add_bookmark)).setOnClickListener(this);
@@ -46,7 +55,6 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
         locManager = new GPSLocationManager(getActivity());
         tripAdapter = new TripDataAdapter(getActivity());
         tripAdapter.open();
-        mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         setUpMapIfNeeded(mapFragment);
         return v;
     }

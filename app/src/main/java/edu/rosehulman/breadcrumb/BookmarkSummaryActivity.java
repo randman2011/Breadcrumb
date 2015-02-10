@@ -1,6 +1,7 @@
 package edu.rosehulman.breadcrumb;
 
 import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
@@ -38,9 +39,14 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mapFragment = MapFragment.newInstance();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(R.id.map_container_summary, mapFragment);
+        ft.commit();
+
         setContentView(R.layout.activity_bookmark_summmary);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         setUpMapIfNeeded(mapFragment);
 
         Intent intent = getIntent();
