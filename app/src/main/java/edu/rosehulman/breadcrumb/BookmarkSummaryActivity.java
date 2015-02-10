@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,18 +28,20 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 
-public class BookmarkSummaryActivity extends ActionBarActivity {
+public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private BookmarkDataAdapter dataAdapter;
     private Bookmark bookmark;
+    private MapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmark_summmary);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setUpMapIfNeeded();
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        setUpMapIfNeeded(mapFragment);
 
         Intent intent = getIntent();
         long bookmarkId = intent.getLongExtra(BookmarksList.KEY_ID, 0);
@@ -116,14 +120,11 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
      * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
      * method in {@link #onResume()} to guarantee that it will be called.
      */
-    private void setUpMapIfNeeded() {
+    private void setUpMapIfNeeded(MapFragment mapFragment) {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-            }
+            mapFragment.getMapAsync(this);
         }
     }
 
@@ -137,4 +138,11 @@ public class BookmarkSummaryActivity extends ActionBarActivity {
         mMap.addMarker(new MarkerOptions().position(coordinate).title(title));
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        // Check if we were successful in obtaining the map.
+        if (mMap != null) {
+        }
+    }
 }
