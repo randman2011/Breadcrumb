@@ -64,7 +64,7 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_add_bookmark);
+        setContentView(R.layout.activity_add_bookmark);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imageSampler = (LinearLayout)findViewById(R.id.image_sampler);

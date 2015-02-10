@@ -42,14 +42,17 @@
 
         <activity
             android:name=".BookmarkSummaryActivity"
+            android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_bookmark_summmary" >
         </activity>
         <activity
             android:name=".TripSummaryActivity"
+            android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_trip_summary" >
         </activity>
         <activity
             android:name=".AddBookmark"
+            android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_add_bookmark" >
         </activity>
     </application>
