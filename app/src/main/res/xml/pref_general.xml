@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
+    <SwitchPreference
         android:key="metric_units"
         android:title="@string/pref_title_metric_units"
         android:summary="@string/pref_description_metric_units"
