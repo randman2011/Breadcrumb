@@ -89,22 +89,9 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
     }
 
     @Override
-    public void onAttach(Activity activity){
+    public void onAttach(Activity activity) {
         //mContext = (Context) activity;
         super.onAttach(activity);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        MapFragment f = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        if (f != null)
-            getFragmentManager().beginTransaction().remove(f).commit();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 
     /**

@@ -25,6 +25,7 @@
     <string name="description">Description</string>
     <string name="save">SAVE</string>
     <string name="title_activity_bookmark_summmary">BookmarkSummmary</string>
+    <string name="title_activity_add_bookmark">AddBookmark</string>
     <string name="delete_bookmark_title">Delete Bookmark</string>
     <string name="delete_bookmark_message">Are you sure you want to delete %s? You will not be able to undo this deletion.</string>
     <string name="delete_trip_title">Delete Trip</string>

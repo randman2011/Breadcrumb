@@ -16,8 +16,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +42,7 @@ import java.util.List;
 /**
  * Created by turnerrs on 1/25/2015.
  */
-public class AddBookmark extends Fragment implements View.OnClickListener {
+public class AddBookmark extends ActionBarActivity implements View.OnClickListener {
 
     private int numAddedImages = 0;
     private static final int MAX_NUMBER_OF_IMAGES = 10;
@@ -58,43 +60,46 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     private GPSCoordinate coordinate;
     private Button btnSave;
 
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_add_bookmark, container, false);
-        imageSampler = (LinearLayout)view.findViewById(R.id.image_sampler);
-        bookmarkNameText = (EditText)view.findViewById(R.id.bookmark_name);
-        bookmarkDescriptionText = (EditText)view.findViewById(R.id.bookmark_description);
-        ((ImageButton)view.findViewById(R.id.image_add_button)).setOnClickListener(this);
-        btnSave = ((Button)view.findViewById(R.id.save_button));
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_add_bookmark);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        imageSampler = (LinearLayout)findViewById(R.id.image_sampler);
+        bookmarkNameText = (EditText)findViewById(R.id.bookmark_name);
+        bookmarkDescriptionText = (EditText)findViewById(R.id.bookmark_description);
+        ((ImageButton)findViewById(R.id.image_add_button)).setOnClickListener(this);
+        btnSave = ((Button)findViewById(R.id.save_button));
         btnSave.setOnClickListener(this);
-        ((Button)view.findViewById(R.id.cancel_button)).setOnClickListener(this);
-        imageView1 = (ImageButton)view.findViewById(R.id.imageView1);
-        imageView2 = (ImageButton)view.findViewById(R.id.imageView2);
+        ((Button)findViewById(R.id.cancel_button)).setOnClickListener(this);
+        imageView1 = (ImageButton)findViewById(R.id.imageView1);
+        imageView2 = (ImageButton)findViewById(R.id.imageView2);
         imageBitmaps = new ArrayList<Bitmap>();
         imageLocations = new ArrayList<String>();
-        bookmarkAdapter = new BookmarkDataAdapter(getActivity());
+        bookmarkAdapter = new BookmarkDataAdapter(this);
         bookmarkAdapter.open();
-        locManager = new GPSLocationManager(getActivity());
+        locManager = new GPSLocationManager(this);
         coordinate = locManager.getGPSCoordinate();
         locManager.endTracking();
-
-        return view;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cancel_button:
-                ((MainActivity)getActivity()).closeFragment();
+                setResult(RESULT_OK);
+                finish();
+                //((MainActivity)getActivity()).closeFragment((Fragment)this);
+                return;
                 // TODO Send signal to MainActivity to close this in FragmentManager
 
             case R.id.save_button:
-                btnSave.setEnabled(false);
                 addBookmark();
-                ((MainActivity)getActivity()).closeFragment();
+                setResult(RESULT_OK);
+                finish();
+                //((MainActivity)getActivity()).closeFragment((Fragment)this);
                 // TODO Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.image_add_button:
@@ -119,7 +124,7 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
 
         final List<Intent> cameraIntents = new ArrayList<Intent>();
         final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        final PackageManager packageManager = getActivity().getPackageManager();
+        final PackageManager packageManager = getPackageManager();
         final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
         for(ResolveInfo res : listCam) {
             final String packageName = res.activityInfo.packageName;
@@ -159,9 +164,9 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                     imageLocations.add(image.toString());
                     InputStream imageStream;
                     try {
-                        imageStream = this.getActivity().getContentResolver().openInputStream(image);
+                        imageStream = getContentResolver().openInputStream(image);
                     } catch (FileNotFoundException e) {
-                        Toast.makeText(this.getActivity(), "File not found", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "File not found", Toast.LENGTH_LONG).show();
                         return;
                     }
                     imageBitmaps.add(BitmapFactory.decodeStream(imageStream));
@@ -188,8 +193,8 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     }
 
     private void addBookmark() {
-        String title = ((EditText)getActivity().findViewById(R.id.bookmark_name)).getText().toString();
-        String description = ((EditText)getActivity().findViewById(R.id.bookmark_description)).getText().toString();
+        String title = ((EditText)findViewById(R.id.bookmark_name)).getText().toString();
+        String description = ((EditText)findViewById(R.id.bookmark_description)).getText().toString();
         Calendar lastVisited = Calendar.getInstance();
         Bookmark bookmark = new Bookmark(title, description, coordinate, lastVisited);
         bookmark.setImageURIs(imageLocations);

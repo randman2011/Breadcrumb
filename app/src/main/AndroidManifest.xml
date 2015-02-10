@@ -48,6 +48,10 @@
             android:name=".TripSummaryActivity"
             android:label="@string/title_activity_trip_summary" >
         </activity>
+        <activity
+            android:name=".AddBookmark"
+            android:label="@string/title_activity_add_bookmark" >
+        </activity>
     </application>
 
     <uses-library android:name="com.google.android.maps" />

@@ -3,6 +3,7 @@ package edu.rosehulman.breadcrumb;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -24,20 +25,14 @@ public class MainActivity extends ActionBarActivity {
     private CharSequence mTitle;
     private ListView mDrawerList;
     private String[] mMenuItems;
+    private Fragment tripTrackingFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Create a new fragment and specify the planet to show based on position
-//        Fragment fragment = new TripTracking();
-//
-//        // Insert the fragment by replacing any existing fragment
-//        FragmentManager fragmentManager = getFragmentManager();
-//        FragmentTransaction ft = fragmentManager.beginTransaction();
-//        ft.add(R.id.content_frame, fragment);
-//        ft.commit();
+        tripTrackingFrag = new TripTracking();
 
         mMenuItems = getResources().getStringArray(R.array.menu_items);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -145,38 +140,60 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void replaceFragment(String selectedItem) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment fragment = null;
+        boolean replace = true;
         if(selectedItem.equals(getString(R.string.menu_bookmark))) {
             fragment = new BookmarksList();
+            replace = true;
             Log.d(Constants.LOG_NAME, "Bookmark Summary selected");
         }else if (selectedItem.equals(getString(R.string.menu_tracking))){
-            fragment = new TripTracking();
+            fragment = tripTrackingFrag;
+            replace = true;
             Log.d(Constants.LOG_NAME, "Tracking selected");
         }else if (selectedItem.equals(getString(R.string.menu_trip_history))){
             fragment = new TripHistory();
+            replace = true;
             Log.d(Constants.LOG_NAME, "Trip History selected");
         }else if (selectedItem.equals(getString(R.string.menu_exit))){
             Log.d(Constants.LOG_NAME, "Finish selected");
             finish();
             return;
         }else if (selectedItem.equals(getString(R.string.menu_add_bookmark))){
-            fragment = new AddBookmark();
-            Log.d(Constants.LOG_NAME, "Add Bookmark selected");
+            Intent addBookmarkIntent = new Intent(this, AddBookmark.class);
+            startActivity(addBookmarkIntent);
+            //fragment = new AddBookmark();
+            //replace = false;
+            //ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+            //ft.hide(tripTrackingFrag);
+            //ft.addToBackStack(tripTrackingFrag.getClass().getName());
+            //Log.d(Constants.LOG_NAME, "Add Bookmark selected");
+            return;
         }
         if (fragment == null) {
             Log.e(Constants.LOG_NAME, "Fragment null. Selected item is " + selectedItem + ". Returning...");
             return;
         }
-
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.content_frame, fragment);
-        ft.addToBackStack(null);
+        if (replace) {
+            ft.replace(R.id.content_frame, fragment);
+        }else{
+            ft.add(R.id.content_frame, fragment);
+        }
         ft.commit();
     }
 
-    public void closeFragment() {
+    public void closeFragment(Fragment fragment) {
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.popBackStack();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (!fragmentManager.popBackStackImmediate(null, 0)) {
+            ft.replace(R.id.content_frame, tripTrackingFrag);
+            ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+            ft.commit();
+        }
+        selectItem(0);
+        //ft.remove(fragment);
+        //ft.show(tripTrackingFrag);
+        //ft.commit();
     }
 
     @Override
