@@ -88,11 +88,13 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cancel_button:
+                ((MainActivity)getActivity()).closeFragment();
                 // TODO Send signal to MainActivity to close this in FragmentManager
 
             case R.id.save_button:
                 btnSave.setEnabled(false);
                 addBookmark();
+                ((MainActivity)getActivity()).closeFragment();
                 // TODO Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.image_add_button:

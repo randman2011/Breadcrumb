@@ -135,43 +135,49 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /** Swaps fragments in the main content view */
-    private void selectItem(int position) {
-        // TODO
+    public void selectItem(int position) {
         // Create a new fragment and specify the planet to show based on position
-        if(mMenuItems[position].toString().equals(getString(R.string.menu_bookmark))) {
-            Fragment fragment = new BookmarksList();
-
-            // Insert the fragment by replacing any existing fragment
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-            Log.d(Constants.LOG_NAME, "Bookmark Summary selected");
-        }else if (mMenuItems[position].toString().equals(getString(R.string.menu_tracking))){
-            Fragment fragment = new TripTracking();
-
-            // Insert the fragment by replacing any existing fragment
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-            Log.d(Constants.LOG_NAME, "Tracking selected");
-        }else if (mMenuItems[position].toString().equals(getString(R.string.menu_trip_history))){
-            Fragment fragment = new TripHistory();
-
-            // Insert the fragment by replacing any existing fragment
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-            Log.d(Constants.LOG_NAME, "Trip History selected");
-        }else if(mMenuItems[position].toString().equals(getString(R.string.menu_exit))){
-
-            Log.d(Constants.LOG_NAME, "Finish selected");
-            finish();
-        }
+        replaceFragment(mMenuItems[position]);
 
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
         setTitle(mMenuItems[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    public void replaceFragment(String selectedItem) {
+        Fragment fragment = null;
+        if(selectedItem.equals(getString(R.string.menu_bookmark))) {
+            fragment = new BookmarksList();
+            Log.d(Constants.LOG_NAME, "Bookmark Summary selected");
+        }else if (selectedItem.equals(getString(R.string.menu_tracking))){
+            fragment = new TripTracking();
+            Log.d(Constants.LOG_NAME, "Tracking selected");
+        }else if (selectedItem.equals(getString(R.string.menu_trip_history))){
+            fragment = new TripHistory();
+            Log.d(Constants.LOG_NAME, "Trip History selected");
+        }else if (selectedItem.equals(getString(R.string.menu_exit))){
+            Log.d(Constants.LOG_NAME, "Finish selected");
+            finish();
+            return;
+        }else if (selectedItem.equals(getString(R.string.menu_add_bookmark))){
+            fragment = new AddBookmark();
+            Log.d(Constants.LOG_NAME, "Add Bookmark selected");
+        }
+        if (fragment == null) {
+            Log.e(Constants.LOG_NAME, "Fragment null. Selected item is " + selectedItem + ". Returning...");
+            return;
+        }
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.content_frame, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    public void closeFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.popBackStack();
     }
 
     @Override

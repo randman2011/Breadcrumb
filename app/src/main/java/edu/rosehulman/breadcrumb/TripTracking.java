@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -79,9 +80,7 @@ public class TripTracking extends Fragment implements View.OnClickListener {
                 }
                 return;
             case R.id.fab_add_bookmark:
-                Fragment fragment = new AddBookmark();
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                ((MainActivity)getActivity()).replaceFragment(getString(R.string.menu_add_bookmark));
                 return;
         }
     }
@@ -90,6 +89,14 @@ public class TripTracking extends Fragment implements View.OnClickListener {
     public void onAttach(Activity activity){
         mContext = (FragmentActivity) activity;
         super.onAttach(activity);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MapFragment f = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        if (f != null)
+            getFragmentManager().beginTransaction().remove(f).commit();
     }
 
     /**
