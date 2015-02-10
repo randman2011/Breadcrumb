@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="@string/name"
+        android:ems="10"
+        android:id="@+id/bookmark_name"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:lines="3"
+        android:gravity="top|left"
+        android:hint="@string/description"
+        android:ems="10"
+        android:scrollbars="vertical"
+        android:id="@+id/bookmark_description"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:id="@+id/image_sampler"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal">
+
+        <ImageButton
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            android:background="@color/transparent"
+            android:id="@+id/imageView1" />
+
+        <ImageButton
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            android:background="@color/transparent"
+            android:id="@+id/imageView2" />
+
+        <ImageButton
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@drawable/ic_action_new"
+            android:id="@+id/image_add_button" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:id="@+id/save_button"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/cancel"
+            android:id="@+id/cancel_button"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/save_button"
+            android:layout_toStartOf="@+id/save_button" />
+    </RelativeLayout>
+</LinearLayout>

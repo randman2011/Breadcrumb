@@ -17,6 +17,8 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
+    <uses-library android:name="com.google.android.maps" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -24,8 +26,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,21 +44,23 @@
 
         <activity
             android:name=".BookmarkSummaryActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_bookmark_summmary" >
+            android:label="@string/title_activity_bookmark_summmary"
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".TripSummaryActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_trip_summary" >
+            android:label="@string/title_activity_trip_summary"
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".AddBookmark"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_add_bookmark" >
+            android:label="@string/title_activity_add_bookmark"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
-
-    <uses-library android:name="com.google.android.maps" />
 
 </manifest>
