@@ -62,7 +62,6 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_bookmark);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,16 +90,11 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
             case R.id.cancel_button:
                 setResult(RESULT_OK);
                 finish();
-                //((MainActivity)getActivity()).closeFragment((Fragment)this);
-                return;
-                // TODO Send signal to MainActivity to close this in FragmentManager
 
             case R.id.save_button:
                 addBookmark();
                 setResult(RESULT_OK);
                 finish();
-                //((MainActivity)getActivity()).closeFragment((Fragment)this);
-                // TODO Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.image_add_button:
                 createIntent();
@@ -138,16 +132,10 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-        //startActivityForResult(photoPickerIntent, KEY_PHOTO_SELECT);
-
         final Intent chooserIntent = Intent.createChooser(photoPickerIntent, "Select Source");
-
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
-
         startActivityForResult(chooserIntent, KEY_PHOTO_SELECT);
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
