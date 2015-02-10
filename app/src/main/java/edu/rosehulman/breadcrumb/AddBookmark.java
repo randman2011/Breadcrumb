@@ -2,8 +2,11 @@ package edu.rosehulman.breadcrumb;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -11,6 +14,9 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +28,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by turnerrs on 1/25/2015.
@@ -87,11 +96,48 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
                 // TODO Send signal to MainActivity to close this in FragmentManager
                 return;
             case R.id.image_add_button:
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, KEY_PHOTO_SELECT);
+                createIntent();
                 return;
         }
+    }
+
+    private Uri outputFileUri;
+
+    private void createIntent() {
+        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+        root.mkdirs();
+        String fname = null;
+        try {
+            fname = File.createTempFile("IMG_", ".jpg").getName();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        final File sdImageMainDirectory = new File(root, fname);
+        outputFileUri = Uri.fromFile(sdImageMainDirectory);
+
+        final List<Intent> cameraIntents = new ArrayList<Intent>();
+        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        final PackageManager packageManager = getActivity().getPackageManager();
+        final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for(ResolveInfo res : listCam) {
+            final String packageName = res.activityInfo.packageName;
+            final Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(packageName);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            cameraIntents.add(intent);
+        }
+
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+        //startActivityForResult(photoPickerIntent, KEY_PHOTO_SELECT);
+
+        final Intent chooserIntent = Intent.createChooser(photoPickerIntent, "Select Source");
+
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
+
+        startActivityForResult(chooserIntent, KEY_PHOTO_SELECT);
     }
 
 
@@ -102,7 +148,12 @@ public class AddBookmark extends Fragment implements View.OnClickListener {
         switch (requestCode) {
             case KEY_PHOTO_SELECT:
                 if (resultCode == Activity.RESULT_OK) {
-                    Uri image = data.getData();
+                    Uri image;
+                    if (data == null) {
+                        image = outputFileUri;
+                    } else {
+                        image = data.getData();
+                    }
                     imageLocations.add(image.toString());
                     InputStream imageStream;
                     try {
