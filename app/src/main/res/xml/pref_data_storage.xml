@@ -14,11 +14,14 @@
 
     <!-- This preference simply launches an intent when selected. Use this UI sparingly, per
          design guidelines. -->
-    <Preference android:title="@string/pref_title_create_backup">
+    <Preference
+        android:title="@string/pref_title_create_backup"
+        android:key="@string/pref_title_create_backup">
 
     </Preference>
 
-    <Preference android:title="@string/pref_title_manage_backups">
+    <Preference android:title="@string/pref_title_manage_backups"
+        android:key="@string/pref_title_manage_backups">
 
     </Preference>
 

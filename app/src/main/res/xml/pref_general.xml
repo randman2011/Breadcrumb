@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:key="metric_units"
+        android:key="@string/pref_key_metric_units"
         android:title="@string/pref_title_metric_units"
         android:summary="@string/pref_description_metric_units"
         android:defaultValue="false" />

@@ -5,6 +5,7 @@
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
+    <string name="pref_key_metric_units">Metric Units</string>
 
     <string name="pref_title_metric_units">Use metric units</string>
     <string name="pref_description_metric_units">Measure distance in kilometers
@@ -28,7 +29,7 @@
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
 
-    <string name="pref_title_poll_frequency">Sync frequency</string>
+    <string name="pref_title_poll_frequency">Poll frequency</string>
     <string-array name="pref_poll_frequency_titles">
         <item>1 second</item>
         <item>3 seconds</item>

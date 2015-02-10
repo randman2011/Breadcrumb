@@ -3,6 +3,7 @@ package edu.rosehulman.breadcrumb;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 
 import java.util.List;
@@ -83,9 +85,9 @@ public class SettingsFragment extends PreferenceFragment {
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
-        bindPreferenceSummaryToValue(findPreference("example_text"));
-        bindPreferenceSummaryToValue(findPreference("example_list"));
-        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+        bindPreferenceSummaryToValue(findPreference(App.getContext().getString(R.string.pref_title_create_backup)));
+        bindPreferenceSummaryToValue(findPreference(App.getContext().getString(R.string.pref_title_manage_backups)));
+        //bindPreferenceSummaryToValue(findPreference(App.getContext().getString(R.string.pref_key_metric_units)));
         bindPreferenceSummaryToValue(findPreference("poll_frequency"));
     }
 
@@ -146,6 +148,20 @@ public class SettingsFragment extends PreferenceFragment {
         }
     };
 
+    private static Preference.OnPreferenceClickListener sOnPreferenceClickListener = new Preference.OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            String key = preference.getKey();
+            if (key == App.getContext().getString(R.string.pref_title_create_backup)) {
+                // TODO create backup
+                Toast.makeText(App.getContext(), "Backup created", Toast.LENGTH_SHORT).show();
+            } else if (key == App.getContext().getString(R.string.pref_title_manage_backups)) {
+                // TODO manage backup
+            }
+            return false;
+        }
+    };
+
     /**
      * Binds a preference's summary to its value. More specifically, when the
      * preference's value is changed, its summary (line of text below the
@@ -158,6 +174,7 @@ public class SettingsFragment extends PreferenceFragment {
     private static void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+        preference.setOnPreferenceClickListener(sOnPreferenceClickListener);
 
         // Trigger the listener immediately with the preference's
         // current value.
@@ -181,8 +198,7 @@ public class SettingsFragment extends PreferenceFragment {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            bindPreferenceSummaryToValue(findPreference("metric_units"));
         }
     }
 
@@ -190,7 +206,7 @@ public class SettingsFragment extends PreferenceFragment {
      * This fragment shows notification preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
+    public static class DataStoragePreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -200,7 +216,8 @@ public class SettingsFragment extends PreferenceFragment {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            bindPreferenceSummaryToValue(findPreference(App.getContext().getString(R.string.pref_title_create_backup)));
+            bindPreferenceSummaryToValue(findPreference(App.getContext().getString(R.string.pref_title_manage_backups)));
         }
     }
 
@@ -218,7 +235,7 @@ public class SettingsFragment extends PreferenceFragment {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+            bindPreferenceSummaryToValue(findPreference("poll_frequency"));
         }
     }
 }
