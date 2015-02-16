@@ -157,7 +157,7 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
                         //Toast.makeText(this, "File not found", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    imageBitmaps.add(BitmapFactory.decodeStream(imageStream));
+                    imageBitmaps.add(Bitmap.createScaledBitmap(BitmapFactory.decodeStream(imageStream), 96, 96, true));
                     numAddedImages++;
 
                     if (numAddedImages > 1) {
