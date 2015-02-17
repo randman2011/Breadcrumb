@@ -52,7 +52,8 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
         tripControl.setOnClickListener(this);
         ((ImageButton)v.findViewById(R.id.fab_add_bookmark)).setOnClickListener(this);
 
-        locManager = new GPSLocationManager(getActivity(), mMap);
+        locManager = new GPSLocationManager(getActivity());
+        locManager.setMap(mMap);
         tripAdapter = new TripDataAdapter(getActivity());
         tripAdapter.open();
         setUpMapIfNeeded(mapFragment);

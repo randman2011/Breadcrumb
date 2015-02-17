@@ -22,11 +22,10 @@ public class GPSLocationManager implements LocationListener {
     private String locationProvider;
     private Context mContext;
     private Trip trip;
-    private GoogleMap mMap;
+    private GoogleMap mMap = null;
 
-    public GPSLocationManager(Context context, GoogleMap map) {
+    public GPSLocationManager(Context context) {
         this.mContext = context;
-        this.mMap = map;
         this.locationProvider = LocationManager.NETWORK_PROVIDER;
         // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -78,4 +77,6 @@ public class GPSLocationManager implements LocationListener {
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
         this.trip = new Trip();
     }
+
+    public void setMap(GoogleMap map) { this.mMap = map;}
 }
