@@ -162,8 +162,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
         mMap = googleMap;
         // Check if we were successful in obtaining the map.
         if (mMap != null) {
-            LatLng coordinate =  getCurrentLocation();
-            endTracking();
+            LatLng coordinate = getCurrentLocation();
             CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
             mMap.animateCamera(yourLocation);
 
