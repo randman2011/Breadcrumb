@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -145,12 +146,15 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         if (selectedItem.equals(getString(R.string.menu_bookmark))) {
             fragment = new BookmarksList();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Bookmark Summary selected");
         } else if (selectedItem.equals(getString(R.string.menu_tracking))) {
             fragment = tripTrackingFrag;
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Tracking selected");
         } else if (selectedItem.equals(getString(R.string.menu_trip_history))) {
             fragment = new TripHistory();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Trip History selected");
         } else if (selectedItem.equals(getString(R.string.menu_exit))) {
             Log.d(Constants.LOG_NAME, "Finish selected");
@@ -158,6 +162,7 @@ public class MainActivity extends ActionBarActivity {
             return;
         } else if (selectedItem.equals(getString(R.string.menu_add_bookmark))) {
             Intent addBookmarkIntent = new Intent(this, AddBookmark.class);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             startActivity(addBookmarkIntent);
             return;
         }

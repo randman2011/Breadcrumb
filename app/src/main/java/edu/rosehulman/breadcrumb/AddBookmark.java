@@ -186,6 +186,7 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         Calendar lastVisited = Calendar.getInstance();
         Bookmark bookmark = new Bookmark(title, description, coordinate, lastVisited);
         bookmark.setImageURIs(imageLocations);
+        Toast.makeText(this, "Images: " + imageLocations.size(), Toast.LENGTH_LONG).show();
         bookmarkAdapter.addBookmark(bookmark);
     }
 }
