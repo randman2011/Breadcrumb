@@ -57,7 +57,7 @@ public class BookmarksList extends Fragment implements View.OnClickListener {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(Constants.LOG_NAME, "Delete Press on " + bookmarks.get(position).getTitle());
                 showDelete(bookmarks.get(position));
-                return false;
+                return true;
             }
         });
 
