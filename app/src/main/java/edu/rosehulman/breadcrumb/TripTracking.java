@@ -151,12 +151,9 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
      */
     private void setUpMapIfNeeded(MapFragment m) {
         // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap != null) {
-            LatLng coordinate = getCurrentLocation();
-            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
-            mMap.animateCamera(yourLocation);
-
-            setUpMap(coordinate);
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mapFragment.getMapAsync(this);
         }
     }
 
