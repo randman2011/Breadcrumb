@@ -1,5 +1,7 @@
 package edu.rosehulman.breadcrumb;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by watterlm on 1/23/2015.
  */
@@ -42,6 +44,8 @@ public class GPSCoordinate implements Comparable<GPSCoordinate>{
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
+
+    public LatLng toLatLong() { return new LatLng(this.latitude, this.longitude);}
 
     @Override
     public int compareTo(GPSCoordinate another) {

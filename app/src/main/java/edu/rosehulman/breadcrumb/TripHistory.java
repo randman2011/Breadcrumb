@@ -61,7 +61,7 @@ public class TripHistory extends Fragment implements View.OnClickListener {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(Constants.LOG_NAME, "Delete Press on " + SIMPLE_FORMAT.format(trips.get(position).getStartDate().getTime()));
                 showDelete(trips.get(position));
-                return false;
+                return true;
             }
         });
 
