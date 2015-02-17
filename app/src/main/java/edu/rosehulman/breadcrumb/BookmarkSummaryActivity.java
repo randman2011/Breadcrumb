@@ -14,6 +14,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,12 +57,14 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
         dataAdapter.open();
         bookmark = dataAdapter.getBookmark(bookmarkId);
         GPSCoordinate coord = bookmark.getCoordinate();
-        LatLng coordinate = new LatLng(coord.getLatitude(), coord.getLongitude());
+        LatLng coordinate = coord.toLatLong();
 
         if (mMap != null){
             CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
             mMap.animateCamera(yourLocation);
             setUpMap(coordinate, bookmark.getTitle());
+        } else {
+            Toast.makeText(this, "Map is null", Toast.LENGTH_SHORT).show();
         }
 
         ((TextView)findViewById(R.id.bookmark_title)).setText(bookmark.getTitle());
@@ -72,7 +75,6 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
 
         ArrayList<Bitmap> photos = bookmark.getBitmapFromUriStrings(this);
         LinearLayout photoView = (LinearLayout)findViewById(R.id.photo_view);
-        //HorizontalScrollView photoView = (HorizontalScrollView)findViewById(R.id.photo_view);
 
         for (Bitmap photo : photos){
             ImageView image = new ImageView(photoView.getContext());
@@ -80,9 +82,6 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
             image.setAdjustViewBounds(true);
             photoView.addView(image);
         }
-
-
-        ((TextView)findViewById(R.id.description)).setText(bookmark.getDescription() + photos.size());
 
         dataAdapter.close();
 

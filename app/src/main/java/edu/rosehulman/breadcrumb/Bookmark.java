@@ -94,12 +94,16 @@ public class Bookmark implements Comparable<Bookmark>{
     public ArrayList<Bitmap> getBitmapFromUriStrings(Context context){
         ArrayList<Bitmap> bmpArrayList = new ArrayList<>();
         for (int i = 0; i < this.imageURIs.size(); i++) {
+            Uri uri = null;
             try {
-                bmpArrayList.add(MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(this.imageURIs.get(i))));
+                uri = Uri.parse(this.imageURIs.get(i));
+                Bitmap bmp = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+                bmpArrayList.add(bmp);
             } catch (Exception e) {
-                Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, e.toString() + " " + uri.toString(), Toast.LENGTH_LONG).show();
             }
         }
+        //Toast.makeText(context, "Uris: " + this.imageURIs.size() + " Images: " + bmpArrayList.size(), Toast.LENGTH_LONG).show();
         return bmpArrayList;
     }
 }
