@@ -80,9 +80,6 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         bookmarkAdapter.open();
         Intent intent = getIntent();
         coordinate = new GPSCoordinate(intent.getDoubleExtra(TripTracking.KEY_LAT, 0.0),intent.getDoubleExtra(TripTracking.KEY_LONG, 0.0));
-//        coordinate.setLongitude(intent.getDoubleExtra(TripTracking.KEY_LONG, 0.0));
-//        coordinate.setLatitude(intent.getDoubleExtra(TripTracking.KEY_LAT, 0.0));
-        bookmarkNameText.setText("LONG: " + coordinate.getLongitude() + " LAT: " + coordinate.getLatitude());
     }
 
     @Override
