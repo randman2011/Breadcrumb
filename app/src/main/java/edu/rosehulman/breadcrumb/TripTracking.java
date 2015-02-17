@@ -2,6 +2,8 @@ package edu.rosehulman.breadcrumb;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -10,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,16 +32,20 @@ import java.util.List;
 /**
  * Created by watterlm on 1/25/2015.
  */
-public class TripTracking extends Fragment implements View.OnClickListener, OnMapReadyCallback {
+public class TripTracking extends Fragment implements View.OnClickListener, OnMapReadyCallback, LocationListener {
 
+    public static String KEY_LONG = "KEY_LONG";
+    public static String KEY_LAT = "KEY_LAT";
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    //private Context mContext;
-    private GPSLocationManager locManager;
+    private LocationManager locManager;
+    private String locationProvider;
     private Button tripControl;
     private Trip trip;
     private TripDataAdapter tripAdapter;
     private MapFragment mapFragment;
-    private static View staticView;
+    private boolean is_tracking = false;
+    private PolylineOptions lineOptions;
+    private MarkerOptions markerOptions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -52,10 +61,19 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
         tripControl.setOnClickListener(this);
         ((ImageButton)v.findViewById(R.id.fab_add_bookmark)).setOnClickListener(this);
 
-        locManager = new GPSLocationManager(getActivity());
+        this.locationProvider = LocationManager.GPS_PROVIDER;
+        // Acquire a reference to the system Location Manager
+        locManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        // Register the listener with the Location Manager to receive location updates
+        locManager.requestLocationUpdates(locationProvider, 0, 0, this);
+
         tripAdapter = new TripDataAdapter(getActivity());
         tripAdapter.open();
         setUpMapIfNeeded(mapFragment);
+
+        lineOptions = new PolylineOptions().width(30).color(Color.RED);
+        markerOptions = new MarkerOptions();
         return v;
     }
 
@@ -64,33 +82,41 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.trip_control:
-                if (tripControl.getText().equals(getString(R.string.start_trip))){
+                if (!is_tracking){//tripControl.getText().equals(getString(R.string.start_trip))){
                     tripControl.setText(R.string.stop_trip);
-                    trip = new Trip();
-                    locManager.startTracking(trip, mMap);
+                    is_tracking = true;
+                    startTracking();
                 } else {
+                    is_tracking = false;
                     tripControl.setText(R.string.start_trip);
-                    trip = locManager.endTracking();
+                    endTracking();
                     if (trip != null) {
                         List<LatLng> coors = new ArrayList<LatLng>();
                         for(GPSCoordinate coordinate : trip.getCoordinates()) {
                             coors.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
                         }
-                        mMap.addPolyline(new PolylineOptions().width(5).color(Color.RED).addAll(coors));
                         trip.setEndDate(Calendar.getInstance());
-                        tripAdapter.addTrip(trip);
+                        long tripId = tripAdapter.addTrip(trip);
+                        Intent intent = new Intent(getActivity(), TripSummaryActivity.class);
+                        intent.putExtra(TripHistory.KEY_ID, tripId);
+                        startActivity(intent);
+
                     }
                 }
                 return;
             case R.id.fab_add_bookmark:
-                ((MainActivity)getActivity()).replaceFragment(getString(R.string.menu_add_bookmark));
+                //((MainActivity)getActivity()).replaceFragment(getString(R.string.menu_add_bookmark));
+                Intent intent = new Intent(getActivity(), AddBookmark.class);
+                LatLng coord = getCurrentLocation();
+                intent.putExtra(KEY_LONG, coord.longitude);
+                intent.putExtra(KEY_LAT, coord.latitude);
+                startActivity(intent);
                 return;
         }
     }
 
     @Override
     public void onAttach(Activity activity) {
-        //mContext = (Context) activity;
         super.onAttach(activity);
     }
 
@@ -124,7 +150,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap(LatLng coordinate) {
-        mMap.addMarker(new MarkerOptions().position(coordinate).title("Marker"));
+        mMap.addMarker(new MarkerOptions().position(coordinate).title("Your Location"));
     }
 
     @Override
@@ -132,12 +158,53 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
         mMap = googleMap;
         // Check if we were successful in obtaining the map.
         if (mMap != null) {
-            LatLng coordinate = locManager.getCurrentLocation();
-            locManager.endTracking();
+            LatLng coordinate = getCurrentLocation();
             CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
             mMap.animateCamera(yourLocation);
 
             setUpMap(coordinate);
         }
+    }
+
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mMap.clear();
+        if (trip != null) {
+            trip.addCoordinate(new GPSCoordinate(location.getLatitude(), location.getLongitude()));
+            mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude())));
+        }
+        mMap.addMarker(markerOptions.position(new LatLng(location.getLatitude(), location.getLongitude())).title("Your Location"));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    public LatLng getCurrentLocation(){
+        Location location = locManager.getLastKnownLocation(locationProvider);
+        return new LatLng(location.getLatitude(), location.getLongitude());
+    }
+
+    public Trip endTracking(){
+        locManager.removeUpdates(this);
+        return trip;
+    }
+
+    public void startTracking(){
+        locManager.requestLocationUpdates(locationProvider, 0, 0, this);
+        this.trip = new Trip();
     }
 }

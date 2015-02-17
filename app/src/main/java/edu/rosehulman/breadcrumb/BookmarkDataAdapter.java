@@ -124,7 +124,7 @@ public class BookmarkDataAdapter {
 
     public Bookmark getBookmark(long id){
         String[] projection = new String[] { KEY_ID, KEY_DESCRIPTION, KEY_TITLE, KEY_LATITUDE, KEY_LONGITUDE, KEY_LAST_VISITED, KEY_IMAGE_FILENAMES };
-        String selection = KEY_ID + " + " + id;
+        String selection = KEY_ID + " = " + id;
         Cursor c = mDb.query(TABLE_NAME, projection, selection, null, null, null, null, null);
         if (c != null && c.moveToFirst()){
             return getBookmarkFromCursor(c);

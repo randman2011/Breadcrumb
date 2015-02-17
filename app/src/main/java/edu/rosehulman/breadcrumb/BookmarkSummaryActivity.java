@@ -82,7 +82,7 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
         }
 
 
-        ((TextView)findViewById(R.id.description)).setText(bookmark.getDescription() + photos.size());
+        ((TextView)findViewById(R.id.description)).setText(bookmark.getDescription());
 
         dataAdapter.close();
 

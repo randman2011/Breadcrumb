@@ -56,7 +56,6 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
     private EditText bookmarkDescriptionText;
     private static final int KEY_PHOTO_SELECT = 20;
     private BookmarkDataAdapter bookmarkAdapter;
-    private GPSLocationManager locManager;
     private GPSCoordinate coordinate;
     private Button btnSave;
 
@@ -79,9 +78,11 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         imageLocations = new ArrayList<String>();
         bookmarkAdapter = new BookmarkDataAdapter(this);
         bookmarkAdapter.open();
-        locManager = new GPSLocationManager(this);
-        coordinate = locManager.getGPSCoordinate();
-        locManager.endTracking();
+        Intent intent = getIntent();
+        coordinate = new GPSCoordinate(intent.getDoubleExtra(TripTracking.KEY_LAT, 0.0),intent.getDoubleExtra(TripTracking.KEY_LONG, 0.0));
+//        coordinate.setLongitude(intent.getDoubleExtra(TripTracking.KEY_LONG, 0.0));
+//        coordinate.setLatitude(intent.getDoubleExtra(TripTracking.KEY_LAT, 0.0));
+        bookmarkNameText.setText("LONG: " + coordinate.getLongitude() + " LAT: " + coordinate.getLatitude());
     }
 
     @Override
@@ -154,7 +155,7 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
                     try {
                         imageStream = getContentResolver().openInputStream(image);
                     } catch (FileNotFoundException e) {
-                        //Toast.makeText(this, "File not found", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "File not found", Toast.LENGTH_LONG).show();
                         return;
                     }
                     imageBitmaps.add(BitmapFactory.decodeStream(imageStream));
