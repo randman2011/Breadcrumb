@@ -6,6 +6,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -20,9 +22,11 @@ public class GPSLocationManager implements LocationListener {
     private String locationProvider;
     private Context mContext;
     private Trip trip;
+    private GoogleMap mMap;
 
-    public GPSLocationManager(Context context) {
+    public GPSLocationManager(Context context, GoogleMap map) {
         this.mContext = context;
+        this.mMap = map;
         this.locationProvider = LocationManager.NETWORK_PROVIDER;
         // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -34,7 +38,9 @@ public class GPSLocationManager implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (trip != null) {
-            trip.addCoordinate(new GPSCoordinate(location.getLatitude(), location.getLongitude()));
+            GPSCoordinate coord = new GPSCoordinate(location.getLatitude(), location.getLongitude());
+            trip.addCoordinate(coord);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(coord.toLatLong()));
         }
     }
 

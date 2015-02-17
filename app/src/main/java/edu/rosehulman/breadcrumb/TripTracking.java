@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class TripTracking extends Fragment implements View.OnClickListener, OnMapReadyCallback {
 
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    public GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //private Context mContext;
     private GPSLocationManager locManager;
     private Button tripControl;
@@ -52,7 +52,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
         tripControl.setOnClickListener(this);
         ((ImageButton)v.findViewById(R.id.fab_add_bookmark)).setOnClickListener(this);
 
-        locManager = new GPSLocationManager(getActivity());
+        locManager = new GPSLocationManager(getActivity(), mMap);
         tripAdapter = new TripDataAdapter(getActivity());
         tripAdapter.open();
         setUpMapIfNeeded(mapFragment);
@@ -76,7 +76,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
                         for(GPSCoordinate coordinate : trip.getCoordinates()) {
                             coors.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
                         }
-                        mMap.addPolyline(new PolylineOptions().width(5).color(Color.RED).addAll(coors));
+                        mMap.addPolyline(new PolylineOptions().width(3).color(Color.RED).addAll(coors));
                         trip.setEndDate(Calendar.getInstance());
                         tripAdapter.addTrip(trip);
                     }
