@@ -162,6 +162,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
         mMap = googleMap;
         // Check if we were successful in obtaining the map.
         if (mMap != null) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
             LatLng coordinate = getCurrentLocation();
             CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
             mMap.animateCamera(yourLocation);
@@ -179,7 +180,10 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
             trip.addCoordinate(new GPSCoordinate(location.getLatitude(), location.getLongitude()));
             mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude())));
         }
-        mMap.addMarker(markerOptions.position(new LatLng(location.getLatitude(), location.getLongitude())).title("Your Location"));
+        LatLng coord = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.addMarker(markerOptions.position(coord).title("Your Location"));
+        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coord, Constants.MAP_ZOOM);
+        mMap.animateCamera(yourLocation);
     }
 
     @Override
@@ -199,7 +203,11 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
 
     public LatLng getCurrentLocation() {
         Location location = locManager.getLastKnownLocation(locationProvider);
-        return new LatLng(location.getLatitude(), location.getLongitude());
+        if (location != null) {
+            return new LatLng(location.getLatitude(), location.getLongitude());
+        }else {
+            return new LatLng(0,0);
+        }
     }
 
     public Trip endTracking() {
@@ -210,5 +218,6 @@ public class TripTracking extends Fragment implements View.OnClickListener, OnMa
     public void startTracking() {
         locManager.requestLocationUpdates(locationProvider, 0, 0, this);
         this.trip = new Trip();
+        lineOptions = new PolylineOptions().width(3).color(Color.RED);
     }
 }
