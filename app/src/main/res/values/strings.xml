@@ -19,13 +19,13 @@
     <string name="drawer_close"></string>
     <string name="bookmark_description_title">Description:</string>
     <string name="bookmark_last_visited">Last Visited: %s</string>
-    <string name="title_activity_trip_summary">TripSummaryActivity</string>
+    <string name="title_activity_trip_summary">Trip Summary Activity</string>
     <string name="hello_world">Hello world!</string>
     <string name="name">Name</string>
     <string name="description">Description</string>
     <string name="save">SAVE</string>
-    <string name="title_activity_bookmark_summmary">BookmarkSummary</string>
-    <string name="title_activity_add_bookmark">AddBookmark</string>
+    <string name="title_activity_bookmark_summmary">Bookmark Summary</string>
+    <string name="title_activity_add_bookmark">Add Bookmark</string>
     <string name="delete_bookmark_title">Delete Bookmark</string>
     <string name="delete_bookmark_message">Are you sure you want to delete %s? You will not be able to undo this deletion.</string>
     <string name="delete_trip_title">Delete Trip</string>
@@ -34,5 +34,6 @@
     <string name="trip_summary_duration">Duration: %s</string>
     <string name="trip_summary_distance" formatted="false">Distance: %.2f %s</string>
     <string name="trip_summary_average_speed" formatted="false">Average Speed: %.2f %s</string>
+    <string name="edit_bookmark">Edit Bookmark</string>
 
 </resources>

@@ -39,13 +39,16 @@
     </LinearLayout>
 
     <HorizontalScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="fill_parent"
+        android:background="@color/background"
         android:layout_height="0dip"
         android:adjustViewBounds="true"
         android:layout_weight="1">
 
         <LinearLayout
             android:orientation="horizontal"
+            android:background="@color/background"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/photo_view">
