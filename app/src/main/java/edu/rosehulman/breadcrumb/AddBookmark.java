@@ -74,11 +74,26 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         ((Button)findViewById(R.id.cancel_button)).setOnClickListener(this);
         imageView1 = (ImageButton)findViewById(R.id.imageView1);
         imageView2 = (ImageButton)findViewById(R.id.imageView2);
-        imageBitmaps = new ArrayList<Bitmap>();
-        imageLocations = new ArrayList<String>();
+        Intent intent = getIntent();
+        if (intent.hasExtra(BookmarkSummaryActivity.KEY_BUNDLE)) {
+            savedInstanceState = intent.getBundleExtra(BookmarkSummaryActivity.KEY_BUNDLE);
+            bookmarkNameText.setText(savedInstanceState.getString(BookmarkSummaryActivity.KEY_BUNDLE_BOOKMARK_TITLE));
+            bookmarkDescriptionText.setText(savedInstanceState.getString(BookmarkSummaryActivity.KEY_BUNDLE_BOOKMARK_DESCRIPTION));
+            imageLocations = savedInstanceState.getStringArrayList(BookmarkSummaryActivity.KEY_BUNDLE_BOOKMARK_IMAGES);
+            Bookmark b = new Bookmark(null, null, null, null);
+            b.setImageURIs(imageLocations);
+            imageBitmaps = b.getBitmapFromUriStrings(this);
+            numAddedImages = imageBitmaps.size();
+            this.setTitle(getString(R.string.edit_bookmark));
+            refreshImageButtons();
+        } else {
+            imageBitmaps = new ArrayList<Bitmap>();
+            imageLocations = new ArrayList<String>();
+        }
+
         bookmarkAdapter = new BookmarkDataAdapter(this);
         bookmarkAdapter.open();
-        Intent intent = getIntent();
+
         coordinate = new GPSCoordinate(intent.getDoubleExtra(TripTracking.KEY_LAT, 0.0),intent.getDoubleExtra(TripTracking.KEY_LONG, 0.0));
     }
 
@@ -158,24 +173,27 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
                     imageBitmaps.add(Bitmap.createScaledBitmap(BitmapFactory.decodeStream(imageStream), 96, 96, true));
                     numAddedImages++;
 
-                    if (numAddedImages > 1) {
-                        imageView1.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 2));
-                        imageView1.setVisibility(View.VISIBLE);
-                        imageView2.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 1));
-                        imageView2.setVisibility(View.VISIBLE);
-                    } else if (numAddedImages == 1) {
-                        imageView2.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 1));
-                        imageView2.setVisibility(View.VISIBLE);
-                        imageView1.setVisibility(View.GONE);
-                    } else {
-                        imageView1.setVisibility(View.GONE);
-                        imageView2.setVisibility(View.GONE);
-                    }
-                    imageView1.invalidate();
-                    imageView2.invalidate();
-
+                    refreshImageButtons();
                 }
         }
+    }
+
+    private void refreshImageButtons() {
+        if (numAddedImages > 1) {
+            imageView1.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 2));
+            imageView1.setVisibility(View.VISIBLE);
+            imageView2.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 1));
+            imageView2.setVisibility(View.VISIBLE);
+        } else if (numAddedImages == 1) {
+            imageView2.setImageBitmap(imageBitmaps.get(imageBitmaps.size() - 1));
+            imageView2.setVisibility(View.VISIBLE);
+            imageView1.setVisibility(View.GONE);
+        } else {
+            imageView1.setVisibility(View.GONE);
+            imageView2.setVisibility(View.GONE);
+        }
+        imageView1.invalidate();
+        imageView2.invalidate();
     }
 
     private void addBookmark() {
