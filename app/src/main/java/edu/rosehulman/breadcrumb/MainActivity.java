@@ -160,9 +160,16 @@ public class MainActivity extends ActionBarActivity {
             Log.d(Constants.LOG_NAME, "Finish selected");
             finish();
             return;
+        } else if (selectedItem.equals(getString(R.string.action_settings))) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            Log.d(Constants.LOG_NAME, "Settings selected");
+            startActivity(settingsIntent);
+            return;
         } else if (selectedItem.equals(getString(R.string.menu_add_bookmark))) {
             Intent addBookmarkIntent = new Intent(this, AddBookmark.class);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            Log.d(Constants.LOG_NAME, "Add Bookmark selected");
             startActivity(addBookmarkIntent);
             return;
         }
