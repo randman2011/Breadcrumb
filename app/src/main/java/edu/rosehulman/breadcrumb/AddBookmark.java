@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -118,14 +119,11 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
     private Uri outputFileUri;
 
     private void createIntent() {
-        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "DCIM" + File.separator + "Camera" + File.separator);
         root.mkdirs();
-        String fname = null;
-        try {
-            fname = File.createTempFile("IMG_", ".jpg").getName();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String fname = "IMG_" + sdf.format(c.getTime()) + ".jpg";
         final File sdImageMainDirectory = new File(root, fname);
         outputFileUri = Uri.fromFile(sdImageMainDirectory);
 
@@ -202,7 +200,6 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         Calendar lastVisited = Calendar.getInstance();
         Bookmark bookmark = new Bookmark(title, description, coordinate, lastVisited);
         bookmark.setImageURIs(imageLocations);
-        Toast.makeText(this, "Images: " + imageLocations.size(), Toast.LENGTH_LONG).show();
         bookmarkAdapter.addBookmark(bookmark);
     }
 }
