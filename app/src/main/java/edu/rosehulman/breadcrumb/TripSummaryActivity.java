@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -129,6 +130,7 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
         // Check if we were successful in obtaining the map.
         if (mMap != null) {
             mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            Log.d(Constants.LOG_NAME, "Map initiated and set to HYBRID");
 
             if (trip != null) {
                 ArrayList<LatLng> coordinates = new ArrayList<LatLng>();

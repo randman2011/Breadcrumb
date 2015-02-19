@@ -149,6 +149,7 @@ public class MainActivity extends ActionBarActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Bookmark Summary selected");
         } else if (selectedItem.equals(getString(R.string.menu_tracking))) {
+            tripTrackingFrag = new TripTracking();
             fragment = tripTrackingFrag;
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Tracking selected");
