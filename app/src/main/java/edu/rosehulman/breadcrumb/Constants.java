@@ -9,7 +9,7 @@ public class Constants {
     public static final String DATABASE_NAME = "Breadcrumb.db";
     public static final int DATABASE_VERSION = 2;
     public static final String LOG_NAME = "Breadcrumb";
-    public static final int MAP_ZOOM = 12;
+    public static final int MAP_ZOOM = 17;
     private static final String ARRAY_DIVIDER = ",";
 
     public static String serialize(String[] content) {
