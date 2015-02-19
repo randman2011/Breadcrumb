@@ -106,6 +106,10 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
                 finish();
 
             case R.id.save_button:
+                if (bookmarkNameText.getText().toString().equals("")) {
+                    Toast.makeText(this, "Name cannot be blank", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 addBookmark();
                 setResult(RESULT_OK);
                 finish();
