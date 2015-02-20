@@ -220,8 +220,6 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
                 break;
             default:
 
-                // TODO Create custom dialog and add full size image to it
-
                 break;
         }
 

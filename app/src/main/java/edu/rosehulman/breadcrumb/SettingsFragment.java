@@ -9,6 +9,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -20,6 +21,10 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.List;
 
 /**
@@ -129,10 +134,36 @@ public class SettingsFragment extends PreferenceFragment {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             String key = preference.getKey();
-            if (key == App.getContext().getString(R.string.pref_title_create_backup)) {
+            if (key.equals(App.getContext().getString(R.string.pref_title_create_backup))) {
+                try {
+                    File sd = Environment.getExternalStorageDirectory();
+                    File data = Environment.getDataDirectory();
+
+                    if (sd.canWrite()) {
+                        String currentDBPath = "//data//" + App.getContext().getPackageName() + "//databases//" + Constants.DATABASE_NAME;
+                        String directoryPath = App.getContext().getString(R.string.app_name);
+                        String backupDBPath =  directoryPath + "//" + Constants.DATABASE_NAME;
+                        File currentDB = new File(data, currentDBPath);
+                        File directory = new File(sd, directoryPath);
+                        File backupDB = new File(sd, backupDBPath);
+                        if (!directory.exists()) {
+                            directory.mkdir();
+                        }
+                        if (currentDB.exists()) {
+                            FileChannel src = new FileInputStream(currentDB).getChannel();
+                            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                            dst.transferFrom(src, 0, src.size());
+                            src.close();
+                            dst.close();
+                            Toast.makeText(App.getContext(), "Backup created", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(App.getContext(), "Backup failed: " + e.toString(), Toast.LENGTH_LONG).show();
+                }
                 // TODO create backup
-                Toast.makeText(App.getContext(), "Backup created", Toast.LENGTH_SHORT).show();
-            } else if (key == App.getContext().getString(R.string.pref_title_manage_backups)) {
+
+            } else if (key.equals(App.getContext().getString(R.string.pref_title_manage_backups))) {
                 // TODO manage backup
             }
             return false;
