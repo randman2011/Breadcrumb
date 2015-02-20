@@ -30,10 +30,11 @@
             android:src="@drawable/ic_navigate"
             android:scaleType="fitCenter"
             android:id="@+id/fab_get_directions" />
+
         <ImageButton
             android:background="@drawable/ripple"
-            android:layout_toLeftOf="@id/fab_get_directions"
-            android:layout_alignParentBottom="true"
+            android:layout_above="@id/fab_get_directions"
+            android:layout_alignParentRight="true"
             android:layout_gravity="bottom|right"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
