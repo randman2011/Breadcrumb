@@ -98,7 +98,7 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
             image.setImageBitmap(photo);
             image.setAdjustViewBounds(true);
             image.setId(id--);
-            //image.setBackground(new ColorDrawable(R.color.background));
+            image.setBackgroundColor(getResources().getColor(R.color.transparent));
             image.setOnClickListener(this);
             image.setOnLongClickListener(this);
             photoView.addView(image);
