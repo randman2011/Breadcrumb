@@ -3,8 +3,11 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_size">56dp</dimen>
+    <dimen name="half_fab_size">-28dp</dimen>
     <dimen name="button_elevation">1dp</dimen>
     <dimen name="button_press_elevation">8dp</dimen>
     <dimen name="tracking_button_height">72dp</dimen>
     <dimen name="fab_bottom_margin">88dp</dimen>
+    <dimen name="map_height">300dp</dimen>
+    <dimen name="image_icon_height">120dp</dimen>
 </resources>
