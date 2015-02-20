@@ -2,13 +2,31 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1" >
     <FrameLayout
         android:id="@+id/map_container_summary"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1">
+        android:layout_height="match_parent" >
 
     </FrameLayout>
+
+    <ImageButton
+        android:background="@drawable/ripple"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:src="@drawable/ic_action_location_found"
+        android:scaleType="fitCenter"
+        android:d="@+id/fab_return_to_position" />
+
+    </RelativeLayout>
  
     <ListView
         android:layout_width="match_parent"

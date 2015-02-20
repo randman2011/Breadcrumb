@@ -1,19 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <FrameLayout
-        android:id="@+id/map_container_summary"
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="2">
+        android:layout_weight="2" >
 
-        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/map_container_summary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
+            </FrameLayout>
 
+        <ImageButton
+            android:background="@drawable/ripple"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:src="@drawable/ic_action_directions"
+            android:scaleType="fitCenter"
+            android:id="@+id/fab_get_directions" />
+        <ImageButton
+            android:background="@drawable/ripple"
+            android:layout_toLeftOf="@id/fab_get_directions"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:src="@drawable/ic_action_location_found"
+            android:scaleType="fitCenter"
+            android:id="@+id/fab_return_to_position" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -89,3 +123,4 @@
     </ScrollView>
 
 </LinearLayout>
+</RelativeLayout>
