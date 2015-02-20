@@ -199,7 +199,14 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        int vId = v.getId();
+        if (vId < 1) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(bookmark.getImageURIs().get(Math.abs(vId))), "image/*");
+            startActivity(intent);
+            return;
+        }
+        switch (vId){
             case R.id.fab_return_to_position:
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
                 mMap.animateCamera(yourLocation);
