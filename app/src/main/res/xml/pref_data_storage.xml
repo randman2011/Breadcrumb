@@ -4,11 +4,11 @@
          dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
     <ListPreference
-        android:key="poll_frequency"
+        android:key="@string/pref_title_poll_frequency"
         android:title="@string/pref_title_poll_frequency"
         android:entries="@array/pref_poll_frequency_titles"
         android:entryValues="@array/pref_poll_frequency_values"
-        android:defaultValue="3"
+        android:defaultValue="0"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null" />
 

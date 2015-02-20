@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.ImageButton;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -255,7 +257,10 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
     }
 
     public void startTracking() {
-        locManager.requestLocationUpdates(locationProvider, 0, 0, this);
+        String pollFrequencyString = PreferenceManager.getDefaultSharedPreferences(App.getContext()).getString(getString(R.string.pref_title_poll_frequency), "0");
+        Toast.makeText(App.getContext(), "Poll frequency: " + pollFrequencyString, Toast.LENGTH_SHORT).show();
+        int pollFrequency = Integer.parseInt(pollFrequencyString) * 1000;
+        locManager.requestLocationUpdates(locationProvider, pollFrequency, 0, this);
         this.trip = new Trip();
         LatLng currentLocation = getCurrentLocation();
         trip.addCoordinate(new GPSCoordinate(currentLocation.latitude, currentLocation.longitude));
@@ -273,7 +278,8 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
         setUpMap(coordinate);
         mMap.setOnCameraChangeListener(null);
         while (mMap.getCameraPosition().zoom < Constants.MAP_ZOOM){ }
-        locManager.requestLocationUpdates(locationProvider, 0, 0, this);
+        int pollFrequency = PreferenceManager.getDefaultSharedPreferences(App.getContext()).getInt(getString(R.string.pref_title_poll_frequency), 0) * 1000;
+        locManager.requestLocationUpdates(locationProvider, pollFrequency, 0, this);
 
     }
 }
