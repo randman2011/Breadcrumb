@@ -35,5 +35,7 @@
     <string name="trip_summary_distance" formatted="false">Distance: %.2f %s</string>
     <string name="trip_summary_average_speed" formatted="false">Average Speed: %.2f %s</string>
     <string name="edit_bookmark">Edit Bookmark</string>
+    <string name="delete_image_message">Delete photo?</string>
+    <string name="delete">DELETE</string>
 
 </resources>

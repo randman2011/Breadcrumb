@@ -77,10 +77,10 @@ public class SettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.pref_data_storage);
 
         // Add 'data and sync' preferences, and a corresponding header.
-        fakeHeader = new PreferenceCategory(getActivity());
-        fakeHeader.setTitle(R.string.pref_header_data_sync);
-        getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_data_sync);
+        //fakeHeader = new PreferenceCategory(getActivity());
+        //fakeHeader.setTitle(R.string.pref_header_data_sync);
+        //getPreferenceScreen().addPreference(fakeHeader);
+        //addPreferencesFromResource(R.xml.pref_data_sync);
 
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
