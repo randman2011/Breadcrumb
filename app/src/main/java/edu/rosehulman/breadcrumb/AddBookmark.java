@@ -55,10 +55,12 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
     private LinearLayout imageSampler;
     private EditText bookmarkNameText;
     private EditText bookmarkDescriptionText;
+    private long bookmarkId;
     private static final int KEY_PHOTO_SELECT = 20;
     private BookmarkDataAdapter bookmarkAdapter;
     private GPSCoordinate coordinate;
     private Button btnSave;
+    private boolean isEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +79,12 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         imageView2 = (ImageButton)findViewById(R.id.imageView2);
         Intent intent = getIntent();
         if (intent.hasExtra(BookmarkSummaryActivity.KEY_BUNDLE)) {
+            isEdit = true;
             savedInstanceState = intent.getBundleExtra(BookmarkSummaryActivity.KEY_BUNDLE);
             bookmarkNameText.setText(savedInstanceState.getString(BookmarkSummaryActivity.KEY_BUNDLE_BOOKMARK_TITLE));
             bookmarkDescriptionText.setText(savedInstanceState.getString(BookmarkSummaryActivity.KEY_BUNDLE_BOOKMARK_DESCRIPTION));
             imageLocations = savedInstanceState.getStringArrayList(BookmarkSummaryActivity.KEY_BUNDLE_BOOKMARK_IMAGES);
+            bookmarkId = savedInstanceState.getLong(BookmarkSummaryActivity.KEY_BUNDLE_BOOKMARK_ID);
             Bookmark b = new Bookmark(null, null, null, null);
             b.setImageURIs(imageLocations);
             imageBitmaps = b.getBitmapFromUriStrings(this);
@@ -147,8 +151,11 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-        final Intent chooserIntent = Intent.createChooser(photoPickerIntent, "Select Source");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
+        //final Intent chooserIntent = Intent.createChooser(photoPickerIntent, "Select Source");
+        final Intent chooserIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        chooserIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        //chooserIntent.setAction(Intent.ACTION_CHOOSER);
+        //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
         startActivityForResult(chooserIntent, KEY_PHOTO_SELECT);
     }
 
@@ -202,8 +209,13 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         String title = ((EditText)findViewById(R.id.bookmark_name)).getText().toString();
         String description = ((EditText)findViewById(R.id.bookmark_description)).getText().toString();
         Calendar lastVisited = Calendar.getInstance();
-        Bookmark bookmark = new Bookmark(title, description, coordinate, lastVisited);
-        bookmark.setImageURIs(imageLocations);
-        bookmarkAdapter.addBookmark(bookmark);
+        Bookmark b = new Bookmark(title, description, coordinate, lastVisited);
+        b.setImageURIs(imageLocations);
+        if (isEdit) {
+            b.setId(bookmarkId);
+            bookmarkAdapter.updateBookmark(b);
+        } else {
+            bookmarkAdapter.addBookmark(b);
+        }
     }
 }

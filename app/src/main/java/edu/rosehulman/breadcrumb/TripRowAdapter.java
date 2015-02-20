@@ -1,6 +1,7 @@
 package edu.rosehulman.breadcrumb;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,11 +17,13 @@ public class TripRowAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Trip> trips;
     private final SimpleDateFormat SIMPLE_FORMAT = new SimpleDateFormat("MM/dd/yyyy h:mm aaa", Locale.US);
+    private boolean useMetricUnits;
 
 
     public TripRowAdapter(Context context, ArrayList<Trip> trips){
         this.mContext = context;
         this.trips = trips;
+        this.useMetricUnits = PreferenceManager.getDefaultSharedPreferences(App.getContext()).getBoolean(App.getContext().getString(R.string.pref_key_metric_units), false);
     }
     @Override
     public int getCount() {
@@ -49,8 +52,7 @@ public class TripRowAdapter extends BaseAdapter {
         view.setDateText(SIMPLE_FORMAT.format(trips.get(position).getStartDate().getTime()));
 
         String distanceText = mContext.getString(R.string.distance_formater, trips.get(position).getDistance());
-        distanceText += " " + mContext.getString(R.string.km);
-        //TODO: Add case for miles
+        distanceText += " " + ((useMetricUnits) ? mContext.getString(R.string.km) : mContext.getString(R.string.miles));
         view.setDistanceText(distanceText);
         return view;
     }

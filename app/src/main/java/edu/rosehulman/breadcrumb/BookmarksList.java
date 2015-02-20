@@ -78,7 +78,7 @@ public class BookmarksList extends Fragment implements View.OnClickListener {
                 deleteBuilder.setTitle(R.string.delete_bookmark_title);
                 deleteBuilder.setMessage(getString(R.string.delete_bookmark_message, bookmark.getTitle()));
                 deleteBuilder.setNegativeButton(android.R.string.cancel, null);
-                deleteBuilder.setPositiveButton(android.R.string.yes,
+                deleteBuilder.setPositiveButton(getString(R.string.delete),
                         new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which){

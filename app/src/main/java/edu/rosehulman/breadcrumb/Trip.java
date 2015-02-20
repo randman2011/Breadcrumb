@@ -1,5 +1,7 @@
 package edu.rosehulman.breadcrumb;
 
+import android.preference.PreferenceManager;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,10 +15,12 @@ public class Trip implements Comparable<Trip>{
     private Calendar endDate;
     private double distance = 0;
     private ArrayList<GPSCoordinate> coordinates;
+    private boolean useMetricUnits;
 
     public Trip(){
         this.coordinates = new ArrayList<GPSCoordinate>();
         this.startDate = Calendar.getInstance();
+        this.useMetricUnits = PreferenceManager.getDefaultSharedPreferences(App.getContext()).getBoolean(App.getContext().getString(R.string.pref_key_metric_units), false);
     }
 
     public Calendar getStartDate() {
@@ -39,7 +43,6 @@ public class Trip implements Comparable<Trip>{
         if(this.distance == 0 && this.coordinates.size() > 1){
             this.distance = calculateDistanceKM();
         }
-        // TODO: Add check for preferences in miles and do miles calculation
 
         return distance;
     }
@@ -107,7 +110,7 @@ public class Trip implements Comparable<Trip>{
         return totalDistance;
     }
 
-    private double getMiles(double distanceKM){
+    static double getMiles(double distanceKM){
         double milesPerKM = .62137;
         return distanceKM * milesPerKM;
     }

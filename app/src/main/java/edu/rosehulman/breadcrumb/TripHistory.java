@@ -81,7 +81,7 @@ public class TripHistory extends Fragment implements View.OnClickListener {
                 deleteBuilder.setTitle(R.string.delete_trip_title);
                 deleteBuilder.setMessage(getString(R.string.delete_trip_message, SIMPLE_FORMAT.format(trip.getStartDate().getTime())));
                 deleteBuilder.setNegativeButton(android.R.string.cancel, null);
-                deleteBuilder.setPositiveButton(android.R.string.yes,
+                deleteBuilder.setPositiveButton(getString(R.string.delete),
                         new DialogInterface.OnClickListener(){
                             @Override
                             public void onClick(DialogInterface dialog, int which){

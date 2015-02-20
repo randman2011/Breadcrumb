@@ -7,8 +7,10 @@
     <string name="start_trip">Start Tracking</string>
     <string name="stop_trip">Stop Tracking</string>
     <string name="tracking_title">Total Distance: %d</string>
-    <string name="miles">Miles</string>
+    <string name="miles">miles</string>
     <string name="km">km</string>
+    <string name="mph">mph</string>
+    <string name="kph">kph</string>
     <string name="distance_formater">%.2f</string>
     <string name="menu_tracking">Trip Tracking</string>
     <string name="menu_bookmark">Bookmarks</string>
@@ -35,5 +37,7 @@
     <string name="trip_summary_distance" formatted="false">Distance: %.2f %s</string>
     <string name="trip_summary_average_speed" formatted="false">Average Speed: %.2f %s</string>
     <string name="edit_bookmark">Edit Bookmark</string>
+    <string name="delete_image_message">Delete photo?</string>
+    <string name="delete">DELETE</string>
 
 </resources>
