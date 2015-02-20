@@ -2,14 +2,12 @@
 
     <!-- These settings headers are only used on tablets. -->
 
-    <header android:fragment="edu.rosehulman.breadcrumb.SettingsActivity$GeneralPreferenceFragment"
+    <header android:fragment="edu.rosehulman.breadcrumb.SettingsFragment$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="edu.rosehulman.breadcrumb.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="edu.rosehulman.breadcrumb.SettingsFragment$DataStoragePreferenceFragment"
         android:title="@string/pref_header_data_storage" />
 
-    <header android:fragment="edu.rosehulman.breadcrumb.SettingsActivity$DataSyncPreferenceFragment"
-        android:title="@string/pref_header_data_sync" />
 
 </preference-headers>

@@ -161,10 +161,31 @@ public class SettingsFragment extends PreferenceFragment {
                 } catch (Exception e) {
                     Toast.makeText(App.getContext(), "Backup failed: " + e.toString(), Toast.LENGTH_LONG).show();
                 }
-                // TODO create backup
 
             } else if (key.equals(App.getContext().getString(R.string.pref_title_manage_backups))) {
-                // TODO manage backup
+                try {
+                    File sd = Environment.getExternalStorageDirectory();
+                    File data = Environment.getDataDirectory();
+
+                    if (sd.canWrite()) {
+                        String databaseDBPath = "//data//" + App.getContext().getPackageName() + "//databases//" + Constants.DATABASE_NAME;
+                        String currentDBPath =  App.getContext().getString(R.string.app_name) + "//" + Constants.DATABASE_NAME;
+                        File currentDB = new File(sd, currentDBPath);
+                        File databaseDB = new File(data, databaseDBPath);
+                        if (currentDB.exists()) {
+                            FileChannel src = new FileInputStream(currentDB).getChannel();
+                            FileChannel dst = new FileOutputStream(databaseDB).getChannel();
+                            dst.transferFrom(src, 0, src.size());
+                            src.close();
+                            dst.close();
+                            Toast.makeText(App.getContext(), "Backup restored", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(App.getContext(), "Breadcrumb/" + Constants.DATABASE_NAME  + " not found", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(App.getContext(), "Backup failed: " + e.toString(), Toast.LENGTH_LONG).show();
+                }
             }
             return false;
         }
@@ -226,24 +247,6 @@ public class SettingsFragment extends PreferenceFragment {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference(App.getContext().getString(R.string.pref_title_create_backup)));
             bindPreferenceSummaryToValue(findPreference(App.getContext().getString(R.string.pref_title_manage_backups)));
-        }
-    }
-
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("poll_frequency"));
         }
     }
 }
