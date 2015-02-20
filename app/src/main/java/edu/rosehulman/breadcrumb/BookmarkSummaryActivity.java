@@ -54,6 +54,8 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
     public static final String KEY_BUNDLE_BOOKMARK_DESCRIPTION = "KEY_BUNDLE_BOOKMARK_DESCRIPTION";
     public static final String KEY_BUNDLE_BOOKMARK_IMAGES = "KEY_BUNDLE_BOOKMARK_IMAGES";
     public static final String KEY_BUNDLE = "KEY_BUNDLE";
+    public static final String KEY_BUNDLE_BOOKMARK_ID = "KEY_BUNDLE_BOOKMARK_ID";
+    public static final int REQUEST_EDIT_BOOKMARK = 22;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,11 +134,21 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
                 b.putStringArrayList(KEY_BUNDLE_BOOKMARK_IMAGES, bookmark.getImageURIs());
                 b.putString(KEY_BUNDLE_BOOKMARK_TITLE, bookmark.getTitle());
                 b.putString(KEY_BUNDLE_BOOKMARK_DESCRIPTION, bookmark.getDescription());
+                b.putLong(KEY_BUNDLE_BOOKMARK_ID, bookmark.getId());
                 intent.putExtra(KEY_BUNDLE, b);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_EDIT_BOOKMARK);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_EDIT_BOOKMARK:
+                this.recreate();
+        }
     }
 
     /**
