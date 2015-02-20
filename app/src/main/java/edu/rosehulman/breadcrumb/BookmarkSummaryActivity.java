@@ -1,10 +1,16 @@
 package edu.rosehulman.breadcrumb;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
+import android.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 
-public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapReadyCallback, View.OnClickListener {
+public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapReadyCallback, View.OnClickListener, View.OnLongClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private BookmarkDataAdapter dataAdapter;
@@ -40,6 +46,9 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
     private MapFragment mapFragment;
     private HorizontalScrollView mScrollView;
     private LatLng coordinate;
+    private ArrayList<Bitmap> photos;
+    private LinearLayout photoView;
+    private View imageSelected;
 
     public static final String KEY_BUNDLE_BOOKMARK_TITLE = "KEY_BUNDLE_BOOKMARK_TITLE";
     public static final String KEY_BUNDLE_BOOKMARK_DESCRIPTION = "KEY_BUNDLE_BOOKMARK_DESCRIPTION";
@@ -77,16 +86,19 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
         ((TextView)findViewById(R.id.last_visited)).setText(getString(R.string.bookmark_last_visited, simpleFormat.format(bookmark.getLastVisited().getTime())));
 
 
-        LinearLayout photoView = (LinearLayout)findViewById(R.id.photo_view);
+        photoView = (LinearLayout)findViewById(R.id.photo_view);
         HorizontalScrollView mScrollView = (HorizontalScrollView)findViewById(R.id.scroll_view);
-        ArrayList<Bitmap> photos = bookmark.getBitmapFromUriStrings(this);
+        photos = bookmark.getBitmapFromUriStrings(this);
+        int id = 0;
 
         for (Bitmap photo : photos){
             ImageButton image = new ImageButton(photoView.getContext());
             image.setImageBitmap(photo);
             image.setAdjustViewBounds(true);
+            image.setId(id--);
             //image.setBackground(new ColorDrawable(R.color.background));
             image.setOnClickListener(this);
+            image.setOnLongClickListener(this);
             photoView.addView(image);
         }
 
@@ -172,6 +184,49 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
 
     @Override
     public void onClick(View v) {
-        // TODO load the full size image
+        int vId = v.getId();
+        if (vId < 1) {
+
+            // TODO Create custom dialog and add full size image to it
+
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        imageSelected = v;
+        DialogFragment df = new DialogFragment(){
+            @NonNull
+            @Override
+            public Dialog onCreateDialog(Bundle savedInstanceState) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(getString(R.string.delete_image_message));
+                builder.setNegativeButton(android.R.string.cancel, null);
+                builder.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteImage();
+                        dialog.dismiss();
+                    }
+                });
+                return builder.create();
+            }
+        };
+        df.show(getFragmentManager(), "");
+        return true;
+    }
+
+    private void deleteImage() {
+        if (imageSelected == null) {
+            return;
+        }
+        int id = imageSelected.getId();
+        photoView.removeView(imageSelected);
+        photos.remove(Math.abs(id));
+        ArrayList<String> uris = bookmark.getImageURIs();
+        uris.remove(Math.abs(id));
+        uris.trimToSize();
+        bookmark.setImageURIs(uris);
+        dataAdapter.updateBookmark(bookmark);
     }
 }

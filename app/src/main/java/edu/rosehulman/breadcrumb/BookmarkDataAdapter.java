@@ -108,6 +108,13 @@ public class BookmarkDataAdapter {
         mDb.delete(TABLE_NAME, KEY_ID + " = " + bookmark.getId(), null);
     }
 
+    public void updateBookmark(Bookmark bookmark ){
+        if (!mDb.isOpen()) {
+            this.open();
+        }
+        mDb.update(TABLE_NAME, getContentValues(bookmark), "_id=" + bookmark.getId(), null);
+    }
+
     public ArrayList<Bookmark> getAllBookmarks(ArrayList<Bookmark> bookmarks){
         bookmarks.clear();
         Cursor cursor = mDb.query(TABLE_NAME, null, null, null, null, null, null, null);

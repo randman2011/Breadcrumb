@@ -106,7 +106,7 @@ public class Bookmark implements Comparable<Bookmark>{
                 Bitmap bmp = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
                 bmpArrayList.add(Bitmap.createScaledBitmap(bmp, pixels, pixels, true));
             } catch (Exception e) {
-                Toast.makeText(context, e.toString() + " " + uri.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, e.toString() + " " + uri.toString(), Toast.LENGTH_LONG).show();
             }
         }
         //Toast.makeText(context, "Uris: " + this.imageURIs.size() + " Images: " + bmpArrayList.size(), Toast.LENGTH_LONG).show();
