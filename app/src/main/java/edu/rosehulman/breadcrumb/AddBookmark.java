@@ -209,6 +209,7 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         String title = ((EditText)findViewById(R.id.bookmark_name)).getText().toString();
         String description = ((EditText)findViewById(R.id.bookmark_description)).getText().toString();
         Calendar lastVisited = Calendar.getInstance();
+        lastVisited.add(Calendar.DAY_OF_MONTH, -3);
         Bookmark b = new Bookmark(title, description, coordinate, lastVisited);
         b.setImageURIs(imageLocations);
         if (isEdit) {
