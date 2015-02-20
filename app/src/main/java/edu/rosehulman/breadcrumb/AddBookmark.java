@@ -151,8 +151,11 @@ public class AddBookmark extends ActionBarActivity implements View.OnClickListen
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-        final Intent chooserIntent = Intent.createChooser(photoPickerIntent, "Select Source");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
+        //final Intent chooserIntent = Intent.createChooser(photoPickerIntent, "Select Source");
+        final Intent chooserIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        chooserIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        //chooserIntent.setAction(Intent.ACTION_CHOOSER);
+        //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
         startActivityForResult(chooserIntent, KEY_PHOTO_SELECT);
     }
 
