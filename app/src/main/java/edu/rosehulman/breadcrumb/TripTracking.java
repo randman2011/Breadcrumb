@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -79,7 +80,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
         tripAdapter.open();
         setUpMapIfNeeded(mapFragment);
 
-        lineOptions = new PolylineOptions().width(3).color(Color.RED);
+        lineOptions = new PolylineOptions().width(Constants.MAP_LINE_WIDTH).color(Color.RED);
         markerOptions = new MarkerOptions();
         return v;
     }
@@ -156,7 +157,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap(LatLng coordinate) {
-        mMap.addMarker(new MarkerOptions().position(coordinate).title("Your Location"));
+        mMap.addMarker(new MarkerOptions().position(coordinate).title("Your Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
     }
 
     /**
@@ -201,7 +202,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
             mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude())));
         }
         LatLng coord = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(markerOptions.position(coord).title("Your Location"));
+        mMap.addMarker(markerOptions.position(coord).title("Your Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         CameraUpdate yourLocation = CameraUpdateFactory.newLatLng(coord);
         mMap.animateCamera(yourLocation);
     }
@@ -238,7 +239,9 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
     public void startTracking() {
         locManager.requestLocationUpdates(locationProvider, 0, 0, this);
         this.trip = new Trip();
-        lineOptions = new PolylineOptions().width(3).color(Color.RED);
+        LatLng currentLocation = getCurrentLocation();
+        trip.addCoordinate(new GPSCoordinate(currentLocation.latitude, currentLocation.longitude));
+        lineOptions = new PolylineOptions().width(Constants.MAP_LINE_WIDTH).color(Color.RED);
     }
 
     @Override
@@ -249,11 +252,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
         mMap.animateCamera(yourLocation);
         setUpMap(coordinate);
         mMap.setOnCameraChangeListener(null);
-        Log.d(Constants.LOG_NAME, "Map zoom: " + mMap.getCameraPosition().zoom);
-        Log.d(Constants.LOG_NAME, "Constant zoom: " + Constants.MAP_ZOOM);
-        while (mMap.getCameraPosition().zoom < Constants.MAP_ZOOM){
-            Log.d(Constants.LOG_NAME, "Map zoom: " + mMap.getCameraPosition().zoom);
-        }
+        while (mMap.getCameraPosition().zoom < Constants.MAP_ZOOM){ }
         locManager.requestLocationUpdates(locationProvider, 0, 0, this);
 
     }

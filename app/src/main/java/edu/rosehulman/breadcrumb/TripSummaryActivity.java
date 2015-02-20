@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -18,22 +19,28 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
 
-public class TripSummaryActivity extends ActionBarActivity implements OnMapReadyCallback {
+public class TripSummaryActivity extends ActionBarActivity implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private TripDataAdapter dataAdapter;
     private Trip trip;
     private MapFragment mapFragment;
     private PolylineOptions lineOptions;
+    private FrameLayout mapContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,10 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(R.id.map_container_summary, mapFragment);
         ft.commit();
+
+        mapContainer = (FrameLayout)findViewById(R.id.map_container_summary);
+
+        setUpMapIfNeeded(mapFragment);
 
         Intent intent = getIntent();
         long tripId = intent.getLongExtra(TripHistory.KEY_ID, 0);
@@ -66,7 +77,7 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tripStrings);
         ((ListView)findViewById(R.id.trip_summary_listView)).setAdapter(adapter);
 
-        lineOptions = new PolylineOptions().width(3).color(Color.RED);
+        lineOptions = new PolylineOptions().width(Constants.MAP_LINE_WIDTH).color(Color.RED);
     }
 
 
@@ -130,20 +141,87 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
         // Check if we were successful in obtaining the map.
         if (mMap != null) {
             mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-            Log.d(Constants.LOG_NAME, "Map initiated and set to HYBRID");
+            Log.d(Constants.LOG_NAME, "Map type: " + mMap.getMapType() + " Should be: " + GoogleMap.MAP_TYPE_HYBRID);
 
-            if (trip != null) {
-                ArrayList<LatLng> coordinates = new ArrayList<LatLng>();
-                for (GPSCoordinate coord : trip.getCoordinates()) {
-                    coordinates.add(new LatLng(coord.getLatitude(), coord.getLongitude()));
-                }
+            mMap.setOnCameraChangeListener(this);
+        }
+    }
 
+    public int getBoundsZoomLevel(LatLngBounds bounds, int mapWidthPx, int mapHeightPx){
+
+        LatLng ne = bounds.northeast;
+        LatLng sw = bounds.southwest;
+
+        double latFraction = (latRad(ne.latitude) - latRad(sw.latitude)) / Math.PI;
+
+        double lngDiff = ne.longitude - sw.longitude;
+        double lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+
+        double latZoom = zoom(mapHeightPx, Constants.WORLD_PX_HEIGHT, latFraction);
+        double lngZoom = zoom(mapWidthPx, Constants.WORLD_PX_WIDTH, lngFraction);
+
+        int result = Math.min((int)latZoom, (int)lngZoom);
+        return Math.max(result, Constants.MAP_ZOOM);
+    }
+
+    public int getBoundsZoomLevel(int mapWidthPx, int mapHeightPx, LatLng ne, LatLng sw){
+
+        double latFraction = (latRad(ne.latitude) - latRad(sw.latitude)) / Math.PI;
+
+        double lngDiff = ne.longitude - sw.longitude;
+        double lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+
+        double latZoom = zoom(mapHeightPx, Constants.WORLD_PX_HEIGHT, latFraction);
+        double lngZoom = zoom(mapWidthPx, Constants.WORLD_PX_WIDTH, lngFraction);
+
+        int result = Math.min((int)latZoom, (int)lngZoom);
+        return Math.max(result, Constants.MAP_ZOOM);
+    }
+
+    private double latRad(double lat) {
+        double sin = Math.sin(lat * Math.PI / 180);
+        double radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
+        return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
+    }
+    private double zoom(int mapPx, int worldPx, double fraction) {
+        return Math.floor(Math.log(mapPx / worldPx / fraction) / Constants.LN2);
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        if (trip != null) {
+            ArrayList<LatLng> coordinates = new ArrayList<LatLng>();
+            ArrayList<Double> latitudes = new ArrayList<Double>();
+            ArrayList<Double> longitudes = new ArrayList<Double>();
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (GPSCoordinate coord : trip.getCoordinates()) {
+                LatLng point = new LatLng(coord.getLatitude(), coord.getLongitude());
+                coordinates.add(point);
+                builder.include(point);
+                latitudes.add(coord.getLatitude());
+                longitudes.add(coord.getLongitude());
+            }
+            Log.d(Constants.LOG_NAME, "Number of points: " + coordinates.size());
+            if (coordinates.size() > 1) {
+                LatLngBounds bounds = builder.build();
                 mMap.addPolyline(lineOptions.addAll(coordinates));
-
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(bounds, mapContainer.getWidth(), mapContainer.getHeight(), 50);
+                mMap.addMarker(new MarkerOptions().position(coordinates.get(0)).title("Start Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                mMap.addMarker(new MarkerOptions().position(coordinates.get(coordinates.size() - 1)).title("End Location"));
+                try {
+                    mMap.animateCamera(yourLocation);
+                } catch (Exception e) {
+                    Log.e(Constants.LOG_NAME, e.getMessage());
+                    Log.d(Constants.LOG_NAME, "Had to zoom to center.");
+                    CameraUpdate newLocation = CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), Constants.MAP_ZOOM);
+                    mMap.animateCamera(newLocation);
+                }
+            } else if (coordinates.size() == 1) {
+                mMap.addMarker(new MarkerOptions().position(coordinates.get(0)).title("Trip Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinates.get(0), Constants.MAP_ZOOM);
                 mMap.animateCamera(yourLocation);
-
             }
         }
+        mMap.setOnCameraChangeListener(null);
     }
 }
