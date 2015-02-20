@@ -208,8 +208,8 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
                 LatLngBounds bounds = builder.build();
                 mMap.addPolyline(lineOptions.addAll(coordinates));
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(bounds, mapContainer.getWidth(), mapContainer.getHeight(), 50);
-                mMap.addMarker(new MarkerOptions().position(coordinates.get(0)).title("Start Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                mMap.addMarker(new MarkerOptions().position(coordinates.get(coordinates.size() - 1)).title("End Location"));
+                mMap.addMarker(new MarkerOptions().position(coordinates.get(0)).title("End Location"));
+                mMap.addMarker(new MarkerOptions().position(coordinates.get(coordinates.size() - 1)).title("Start Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                 try {
                     mMap.animateCamera(yourLocation);
                 } catch (Exception e) {
