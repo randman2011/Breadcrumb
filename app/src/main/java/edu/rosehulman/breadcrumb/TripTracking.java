@@ -258,7 +258,6 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
 
     public void startTracking() {
         String pollFrequencyString = PreferenceManager.getDefaultSharedPreferences(App.getContext()).getString(getString(R.string.pref_title_poll_frequency), "0");
-        Toast.makeText(App.getContext(), "Poll frequency: " + pollFrequencyString, Toast.LENGTH_SHORT).show();
         int pollFrequency = Integer.parseInt(pollFrequencyString) * 1000;
         locManager.requestLocationUpdates(locationProvider, pollFrequency, 0, this);
         this.trip = new Trip();
@@ -278,7 +277,8 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
         setUpMap(coordinate);
         mMap.setOnCameraChangeListener(null);
         while (mMap.getCameraPosition().zoom < Constants.MAP_ZOOM){ }
-        int pollFrequency = PreferenceManager.getDefaultSharedPreferences(App.getContext()).getInt(getString(R.string.pref_title_poll_frequency), 0) * 1000;
+        String pollFrequencyString = PreferenceManager.getDefaultSharedPreferences(App.getContext()).getString(getString(R.string.pref_title_poll_frequency), "0");
+        int pollFrequency = Integer.parseInt(pollFrequencyString) * 1000;
         locManager.requestLocationUpdates(locationProvider, pollFrequency, 0, this);
 
     }
