@@ -7,8 +7,10 @@
     <string name="start_trip">Start Tracking</string>
     <string name="stop_trip">Stop Tracking</string>
     <string name="tracking_title">Total Distance: %d</string>
-    <string name="miles">Miles</string>
+    <string name="miles">miles</string>
     <string name="km">km</string>
+    <string name="mph">mph</string>
+    <string name="kph">kph</string>
     <string name="distance_formater">%.2f</string>
     <string name="menu_tracking">Trip Tracking</string>
     <string name="menu_bookmark">Bookmarks</string>

@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
     private Trip trip;
     private MapFragment mapFragment;
     private PolylineOptions lineOptions;
+    private boolean useMetricUnits;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,8 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
         ft.add(R.id.map_container_summary, mapFragment);
         ft.commit();
 
+        useMetricUnits = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_metric_units), false);
+
         Intent intent = getIntent();
         long tripId = intent.getLongExtra(TripHistory.KEY_ID, 0);
 
@@ -55,18 +59,23 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
 
         SimpleDateFormat simpleFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
 
+        double distance = (useMetricUnits) ? trip.getDistance() : Trip.getMiles(trip.getDistance());
+        String distanceLabel = (useMetricUnits) ? " " + getString(R.string.km) : " " + getString(R.string.miles);
+        double speed = (useMetricUnits) ? trip.calculateAverageSpeed() : Trip.getMiles(trip.calculateAverageSpeed());
+        String speedLabel = (useMetricUnits) ? " " + getString(R.string.kph) : " " + getString(R.string.mph);
+
         ArrayList<String> tripStrings = new ArrayList<String>();
         tripStrings.add(getString(R.string.trip_summary_date, simpleFormat.format(trip.getStartDate().getTime())));
         tripStrings.add(getString(R.string.trip_summary_duration, trip.calculateDuration()));
-        tripStrings.add(String.format(getString(R.string.trip_summary_distance), trip.getDistance()," km"));
-        //TODO:Add case for miles
-        tripStrings.add(String.format(getString(R.string.trip_summary_average_speed), trip.calculateAverageSpeed(), " kmph"));
-        // TODO: Add case for miles
+        tripStrings.add(String.format(getString(R.string.trip_summary_distance), trip.getDistance(),distanceLabel));
+        tripStrings.add(String.format(getString(R.string.trip_summary_average_speed), trip.calculateAverageSpeed(), speedLabel));
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tripStrings);
         ((ListView)findViewById(R.id.trip_summary_listView)).setAdapter(adapter);
 
         lineOptions = new PolylineOptions().width(3).color(Color.RED);
+
+
     }
 
 
@@ -84,10 +93,6 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
