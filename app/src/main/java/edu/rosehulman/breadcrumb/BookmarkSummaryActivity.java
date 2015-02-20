@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
@@ -80,7 +81,8 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
         GPSCoordinate coord = bookmark.getCoordinate();
         coordinate = new LatLng(coord.getLatitude(), coord.getLongitude());
 
-
+        ((ImageButton)findViewById(R.id.fab_return_to_position)).setOnClickListener(this);
+        ((ImageButton)findViewById(R.id.fab_get_directions)).setOnClickListener(this);
 
         ((TextView)findViewById(R.id.bookmark_title)).setText(bookmark.getTitle());
 
@@ -197,12 +199,26 @@ public class BookmarkSummaryActivity extends ActionBarActivity implements OnMapR
 
     @Override
     public void onClick(View v) {
-        int vId = v.getId();
-        if (vId < 1) {
+        switch (v.getId()){
+            case R.id.fab_return_to_position:
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, Constants.MAP_ZOOM);
+                mMap.animateCamera(yourLocation);
+                break;
+            case R.id.fab_get_directions:
+                String uri = String.format("google.navigation:q=%f,%f", coordinate.latitude, coordinate.longitude);
+                Uri gmmIntentUri = Uri.parse(uri);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+                break;
+            default:
 
-            // TODO Create custom dialog and add full size image to it
+                // TODO Create custom dialog and add full size image to it
 
+                break;
         }
+
+
     }
 
     @Override

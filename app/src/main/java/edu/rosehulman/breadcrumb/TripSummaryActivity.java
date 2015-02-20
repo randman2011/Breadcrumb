@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -28,12 +30,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Locale;
 
 
-public class TripSummaryActivity extends ActionBarActivity implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener {
+public class TripSummaryActivity extends ActionBarActivity implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener, View.OnClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private TripDataAdapter dataAdapter;
@@ -42,6 +42,9 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
     private PolylineOptions lineOptions;
     private FrameLayout mapContainer;
     private boolean useMetricUnits;
+    private LatLng centerLocation;
+    private LatLngBounds bounds;
+    private ArrayList<LatLng> coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
         String distanceLabel = (useMetricUnits) ? " " + getString(R.string.km) : " " + getString(R.string.miles);
         double speed = (useMetricUnits) ? trip.calculateAverageSpeed() : Trip.getMiles(trip.calculateAverageSpeed());
         String speedLabel = (useMetricUnits) ? " " + getString(R.string.kph) : " " + getString(R.string.mph);
+
+        ((ImageButton)findViewById(R.id.fab_return_to_position)).setOnClickListener(this);
 
         ArrayList<String> tripStrings = new ArrayList<String>();
         tripStrings.add(getString(R.string.trip_summary_date, simpleFormat.format(trip.getStartDate().getTime())));
@@ -149,50 +154,10 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
         }
     }
 
-    public int getBoundsZoomLevel(LatLngBounds bounds, int mapWidthPx, int mapHeightPx){
-
-        LatLng ne = bounds.northeast;
-        LatLng sw = bounds.southwest;
-
-        double latFraction = (latRad(ne.latitude) - latRad(sw.latitude)) / Math.PI;
-
-        double lngDiff = ne.longitude - sw.longitude;
-        double lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
-
-        double latZoom = zoom(mapHeightPx, Constants.WORLD_PX_HEIGHT, latFraction);
-        double lngZoom = zoom(mapWidthPx, Constants.WORLD_PX_WIDTH, lngFraction);
-
-        int result = Math.min((int)latZoom, (int)lngZoom);
-        return Math.max(result, Constants.MAP_ZOOM);
-    }
-
-    public int getBoundsZoomLevel(int mapWidthPx, int mapHeightPx, LatLng ne, LatLng sw){
-
-        double latFraction = (latRad(ne.latitude) - latRad(sw.latitude)) / Math.PI;
-
-        double lngDiff = ne.longitude - sw.longitude;
-        double lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
-
-        double latZoom = zoom(mapHeightPx, Constants.WORLD_PX_HEIGHT, latFraction);
-        double lngZoom = zoom(mapWidthPx, Constants.WORLD_PX_WIDTH, lngFraction);
-
-        int result = Math.min((int)latZoom, (int)lngZoom);
-        return Math.max(result, Constants.MAP_ZOOM);
-    }
-
-    private double latRad(double lat) {
-        double sin = Math.sin(lat * Math.PI / 180);
-        double radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
-        return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
-    }
-    private double zoom(int mapPx, int worldPx, double fraction) {
-        return Math.floor(Math.log(mapPx / worldPx / fraction) / Constants.LN2);
-    }
-
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
         if (trip != null) {
-            ArrayList<LatLng> coordinates = new ArrayList<LatLng>();
+            coordinates = new ArrayList<LatLng>();
             ArrayList<Double> latitudes = new ArrayList<Double>();
             ArrayList<Double> longitudes = new ArrayList<Double>();
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -205,8 +170,9 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
             }
             Log.d(Constants.LOG_NAME, "Number of points: " + coordinates.size());
             if (coordinates.size() > 1) {
-                LatLngBounds bounds = builder.build();
+                bounds = builder.build();
                 mMap.addPolyline(lineOptions.addAll(coordinates));
+                centerLocation = bounds.getCenter();
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(bounds, mapContainer.getWidth(), mapContainer.getHeight(), 50);
                 mMap.addMarker(new MarkerOptions().position(coordinates.get(0)).title("End Location"));
                 mMap.addMarker(new MarkerOptions().position(coordinates.get(coordinates.size() - 1)).title("Start Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
@@ -219,11 +185,41 @@ public class TripSummaryActivity extends ActionBarActivity implements OnMapReady
                     mMap.animateCamera(newLocation);
                 }
             } else if (coordinates.size() == 1) {
+                bounds = null;
                 mMap.addMarker(new MarkerOptions().position(coordinates.get(0)).title("Trip Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                centerLocation = coordinates.get(0);
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinates.get(0), Constants.MAP_ZOOM);
                 mMap.animateCamera(yourLocation);
             }
         }
         mMap.setOnCameraChangeListener(null);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.fab_return_to_position:
+                if (coordinates.size() > 1 && bounds != null) {
+                    CameraUpdate yourLocation = CameraUpdateFactory.newLatLngBounds(bounds, mapContainer.getWidth(), mapContainer.getHeight(), 50);
+                    mMap.addMarker(new MarkerOptions().position(coordinates.get(0)).title("End Location"));
+                    mMap.addMarker(new MarkerOptions().position(coordinates.get(coordinates.size() - 1)).title("Start Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    try {
+                        mMap.animateCamera(yourLocation);
+                    } catch (Exception e) {
+                        Log.e(Constants.LOG_NAME, e.getMessage());
+                        Log.d(Constants.LOG_NAME, "Had to zoom to center.");
+                        CameraUpdate newLocation = CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), Constants.MAP_ZOOM);
+                        mMap.animateCamera(newLocation);
+                    }
+                } else if (coordinates.size() == 1) {
+                    mMap.addMarker(new MarkerOptions().position(coordinates.get(0)).title("Trip Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinates.get(0), Constants.MAP_ZOOM);
+                    mMap.animateCamera(yourLocation);
+                }
+                return;
+            default:
+                Log.d(Constants.LOG_NAME, "No valid ID");
+                break;
+        }
     }
 }
