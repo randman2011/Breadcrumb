@@ -134,7 +134,32 @@ public class BookmarkDataAdapter {
         String selection = KEY_ID + " = " + id;
         Cursor c = mDb.query(TABLE_NAME, projection, selection, null, null, null, null, null);
         if (c != null && c.moveToFirst()){
-            return getBookmarkFromCursor(c);
+            Bookmark bookmark = getBookmarkFromCursor(c);
+
+            // Update bookmark last visited date
+
+            // get the trip id for the GPSCoordinate within 10 latitude or longitude units of the bookmark for the most recent trips
+            GPSCoordinateDataAdapter dataAdapter = new GPSCoordinateDataAdapter(context);
+            dataAdapter.open();
+            long tripId = dataAdapter.getTripIdForBookmarkUpdate(bookmark.getCoordinate().getLatitude(), bookmark.getCoordinate().getLongitude());
+            dataAdapter.close();
+
+            // get the trip so the date can be obtained
+            if (tripId != 0L) {
+                TripDataAdapter tripAdapter = new TripDataAdapter(context);
+                tripAdapter.open();
+                Trip trip = tripAdapter.getTrip(tripId);
+                tripAdapter.close();
+
+                // update the last visited date
+                if (trip.getEndDate().compareTo(bookmark.getLastVisited()) > 0) {
+                    bookmark.setLastVisited(trip.getEndDate());
+                    updateBookmark(bookmark);
+                }
+            }
+
+            // return the bookmark
+            return bookmark;
         }
         return null;
     }

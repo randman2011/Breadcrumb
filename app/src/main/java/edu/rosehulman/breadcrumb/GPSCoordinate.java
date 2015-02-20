@@ -9,6 +9,7 @@ public class GPSCoordinate implements Comparable<GPSCoordinate>{
     private double longitude;
     private double latitude;
     private long id;
+    private long tripId;
 
     public GPSCoordinate(double latitude, double longitude){
         this.longitude = longitude;
@@ -27,6 +28,14 @@ public class GPSCoordinate implements Comparable<GPSCoordinate>{
 
     public long getId(){
         return this.id;
+    }
+
+    public void setTripId(long id){
+        this.tripId = id;
+    }
+
+    public long getTripId(){
+        return this.tripId;
     }
 
     public double getLongitude() {
