@@ -46,21 +46,25 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".BookmarkSummaryActivity"
             android:label="@string/title_activity_bookmark_summmary"
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".TripSummaryActivity"
             android:label="@string/title_activity_trip_summary"
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".AddBookmark"
             android:label="@string/title_activity_add_bookmark"
             android:parentActivityName=".MainActivity" >
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_settings" >
