@@ -51,7 +51,7 @@
         android:layout_marginBottom="@dimen/fab_bottom_margin"
         android:layout_width="@dimen/fab_size"
         android:layout_height="@dimen/fab_size"
-        android:src="@drawable/ic_action_location_found"
+        android:src="@drawable/ic_location_found"
         android:scaleType="fitCenter"
         android:id="@+id/fab_return_to_position" />
 </RelativeLayout>

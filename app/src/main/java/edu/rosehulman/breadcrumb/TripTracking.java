@@ -69,6 +69,7 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
         tripControl = ((Button) v.findViewById(R.id.trip_control));
         tripControl.setOnClickListener(this);
         ((ImageButton) v.findViewById(R.id.fab_add_bookmark)).setOnClickListener(this);
+        ((ImageButton) v.findViewById(R.id.fab_return_to_position)).setOnClickListener(this);
 
         this.locationProvider = LocationManager.GPS_PROVIDER;
         // Acquire a reference to the system Location Manager
@@ -121,6 +122,14 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
                 intent.putExtra(KEY_LAT, coord.latitude);
                 startActivity(intent);
                 return;
+            case R.id.fab_return_to_position:
+                Log.d(Constants.LOG_NAME, "Pressed return to position");
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(getCurrentLocation(), Constants.MAP_ZOOM);
+                mMap.animateCamera(yourLocation);
+                return;
+            default:
+                Log.d(Constants.LOG_NAME, "No valid ID");
+                break;
         }
 
     }
@@ -205,15 +214,15 @@ public class TripTracking extends Fragment implements View.OnClickListener, Goog
     @Override
     public void onLocationChanged(Location location) {
         mMap.clear();
+        LatLng coord = new LatLng(location.getLatitude(), location.getLongitude());
         if (trip != null) {
             trip.addCoordinate(new GPSCoordinate(location.getLatitude(), location.getLongitude()));
-            mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude())));
+            mMap.addPolyline(lineOptions.add(coord));
             mMap.addMarker(startMarker);
+            CameraUpdate yourLocation = CameraUpdateFactory.newLatLng(coord);
+            mMap.animateCamera(yourLocation);
         }
-        LatLng coord = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(markerOptions.position(coord).title("Your Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        CameraUpdate yourLocation = CameraUpdateFactory.newLatLng(coord);
-        mMap.animateCamera(yourLocation);
     }
 
     @Override

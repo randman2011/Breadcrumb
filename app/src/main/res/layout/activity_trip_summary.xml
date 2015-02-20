@@ -22,9 +22,9 @@
         android:layout_marginRight="16dp"
         android:layout_width="@dimen/fab_size"
         android:layout_height="@dimen/fab_size"
-        android:src="@drawable/ic_action_location_found"
+        android:src="@drawable/ic_location_found"
         android:scaleType="fitCenter"
-        android:d="@+id/fab_return_to_position" />
+        android:id="@+id/fab_return_to_position" />
 
     </RelativeLayout>
  
