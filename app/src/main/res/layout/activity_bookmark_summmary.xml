@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     android:background="@color/background">
 
     <FrameLayout
+        android:layout_alignParentTop="true"
         android:id="@+id/map_container_summary"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="2">
+        android:layout_height="@dimen/map_height">
 
-        </FrameLayout>
+    </FrameLayout>
 
 
 
     <LinearLayout
+        android:layout_below="@id/map_container_summary"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/info_bar_layout"
         android:background="@color/color_primary">
 
         <TextView
@@ -38,18 +41,31 @@
 
     </LinearLayout>
 
+    <ImageButton
+        android:background="@drawable/ripple"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/map_container_summary"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/half_fab_size"
+        android:layout_marginRight="16dp"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:src="@drawable/ic_navigate"
+        android:scaleType="fitCenter"
+        android:id="@+id/fab_navigate" />
+
     <HorizontalScrollView
+        android:layout_below="@id/info_bar_layout"
         android:id="@+id/scroll_view"
         android:layout_width="fill_parent"
         android:background="@color/background"
-        android:layout_height="0dip"
-        android:adjustViewBounds="true"
-        android:layout_weight="1">
+        android:layout_height="@dimen/image_icon_height"
+        android:adjustViewBounds="true">
 
         <LinearLayout
             android:orientation="horizontal"
             android:background="@color/background"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/photo_view">
 
@@ -59,9 +75,9 @@
     </HorizontalScrollView>
 
     <ScrollView
+        android:layout_below="@id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:id="@+id/scrollView"
         android:background="@color/background">
 
@@ -88,4 +104,4 @@
 
     </ScrollView>
 
-</LinearLayout>
+</RelativeLayout>
