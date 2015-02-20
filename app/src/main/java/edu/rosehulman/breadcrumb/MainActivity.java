@@ -1,5 +1,6 @@
 package edu.rosehulman.breadcrumb;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -18,6 +19,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainActivity extends ActionBarActivity {
 
     private DrawerLayout mDrawerLayout;
@@ -27,6 +31,8 @@ public class MainActivity extends ActionBarActivity {
     private ListView mDrawerList;
     private String[] mMenuItems;
     private Fragment tripTrackingFrag;
+    private String pageBeforeSettings;
+    private static final int SETTING_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,15 +148,18 @@ public class MainActivity extends ActionBarActivity {
             fragment = new BookmarksList();
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Bookmark Summary selected");
+            pageBeforeSettings = getString(R.string.menu_bookmark);
         } else if (selectedItem.equals(getString(R.string.menu_tracking))) {
             tripTrackingFrag = new TripTracking();
             fragment = tripTrackingFrag;
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Tracking selected");
+            pageBeforeSettings = getString(R.string.menu_tracking);
         } else if (selectedItem.equals(getString(R.string.menu_trip_history))) {
             fragment = new TripHistory();
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Trip History selected");
+            pageBeforeSettings = getString(R.string.menu_trip_history);
         } else if (selectedItem.equals(getString(R.string.menu_exit))) {
             Log.d(Constants.LOG_NAME, "Finish selected");
             finish();
@@ -159,12 +168,13 @@ public class MainActivity extends ActionBarActivity {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Settings selected");
-            startActivity(settingsIntent);
+            startActivityForResult(settingsIntent, SETTING_REQUEST_CODE);
             return;
         } else if (selectedItem.equals(getString(R.string.menu_add_bookmark))) {
             Intent addBookmarkIntent = new Intent(this, AddBookmark.class);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             Log.d(Constants.LOG_NAME, "Add Bookmark selected");
+            pageBeforeSettings = getString(R.string.menu_add_bookmark);
             startActivity(addBookmarkIntent);
             return;
         }
@@ -175,6 +185,37 @@ public class MainActivity extends ActionBarActivity {
         ft.replace(R.id.content_frame, fragment);
 
         ft.commit();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // See which child activity is calling us back.
+        switch (requestCode) {
+            case SETTING_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.d(Constants.LOG_NAME, "Result ok!");
+                    refreshAfterSettings();
+                } else {
+                    Log.d(Constants.LOG_NAME, "Result not okay.  User hit back without a button:");
+                    refreshAfterSettings();
+                }
+                break;
+            default:
+                Log.d(Constants.LOG_NAME, "Unknown result code");
+                break;
+        }
+    }
+
+    public void refreshAfterSettings(){
+        ArrayList<String> items = new ArrayList<String>(Arrays.asList(mMenuItems));
+        int index = items.indexOf(pageBeforeSettings);
+        mDrawerList.setItemChecked(index, true);
+        if (pageBeforeSettings == getString(R.string.menu_trip_history)){
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            Fragment fragment = new TripHistory();
+            ft.replace(R.id.content_frame, fragment);
+
+            ft.commit();
+        }
     }
 
     @Override
